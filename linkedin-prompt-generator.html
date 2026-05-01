@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Post Prompt Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0A66C2;
+      --blue-dark: #004182;
+      --blue-light: #EEF3F8;
+      --bg: #F3F2EF;
+      --card: #FFFFFF;
+      --text: #191919;
+      --text-secondary: #666666;
+      --border: #E0E0E0;
+      --green: #057642;
+      --red: #CC0000;
+      --radius: 12px;
+      --radius-sm: 6px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: var(--blue);
+      color: #fff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    header .logo {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      font-size: 0.8rem;
+      opacity: 0.85;
+      margin-top: 1px;
+    }
+
+    .main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .step {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Profile panel */
+    .profile-load-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, opacity 0.15s;
+      text-decoration: none;
+    }
+
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-dark); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--blue);
+      border: 1.5px solid var(--blue);
+    }
+    .btn-secondary:hover:not(:disabled) { background: var(--blue-light); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover:not(:disabled) { background: #f5f5f5; }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1.5px solid var(--red);
+      padding: 5px 12px;
+      font-size: 0.8rem;
+    }
+    .btn-danger:hover { background: #FFF5F5; }
+
+    .btn-success { background: var(--green); color: #fff; }
+
+    #profile-summary-bar {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--blue-light);
+      border: 1.5px solid #C8D9EE;
+      border-radius: var(--radius-sm);
+      flex-wrap: wrap;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; min-width: 0; }
+    .profile-info strong { display: block; font-size: 0.9rem; }
+    .profile-info span { font-size: 0.8rem; color: var(--text-secondary); }
+
+    .paste-area {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .paste-area textarea {
+      width: 100%;
+      height: 130px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      font-family: monospace;
+      resize: vertical;
+      color: var(--text);
+    }
+
+    .paste-area textarea:focus { outline: none; border-color: var(--blue); }
+
+    .paste-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .error-msg {
+      display: none;
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #FFF5F5;
+      border-radius: var(--radius-sm);
+      border: 1px solid #FFCCCC;
+    }
+
+    /* Template cards */
+    #template-section {
+      opacity: 0.45;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    #template-section.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 12px;
+    }
+
+    .template-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      user-select: none;
+    }
+
+    .template-card:hover { border-color: var(--blue); background: var(--blue-light); }
+
+    .template-card.selected {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .template-card .tc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .template-card .tc-name { font-weight: 600; font-size: 0.875rem; color: var(--text); }
+    .template-card .tc-desc { font-size: 0.775rem; color: var(--text-secondary); margin-top: 3px; }
+
+    /* Config panel */
+    #config-section { display: none; }
+
+    .form-group { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    label .hint {
+      font-weight: 400;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    input[type="text"].field-error,
+    textarea.field-error { border-color: var(--red); }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-row span { font-size: 0.875rem; }
+
+    .global-config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 520px) {
+      .global-config-grid { grid-template-columns: 1fr; }
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    /* Hashtag chips */
+    #hashtag-chip-area { display: none; margin-top: 8px; }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--blue);
+      background: var(--blue);
+      color: #fff;
+      transition: background 0.12s, color 0.12s;
+      user-select: none;
+    }
+
+    .chip.deselected {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    /* Template-specific fields */
+    #template-fields { margin-top: 4px; }
+
+    /* Sticky generate bar */
+    #generate-bar {
+      display: none;
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(6px);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+
+    #generate-bar .inner {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #generate-bar .btn-primary {
+      flex: 1;
+      justify-content: center;
+      padding: 12px 24px;
+      font-size: 1rem;
+    }
+
+    #validation-error {
+      display: none;
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* Output panel */
+    #output-section { display: none; }
+
+    .output-hint {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: #F0F7FF;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--blue);
+    }
+
+    #output-prompt {
+      width: 100%;
+      min-height: 280px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      resize: vertical;
+      background: #FAFAFA;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #copy-feedback {
+      display: none;
+      color: var(--green);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .profile-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 10px;
+    }
+
+    .profile-hint a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .profile-hint a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">in</div>
+  <div>
+    <h1>LinkedIn Post Prompt Generator</h1>
+    <p>Generate AI prompts to craft compelling LinkedIn posts from your profile</p>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- STEP 1: Profile -->
+  <section class="card" id="profile-section">
+    <div class="card-title"><span class="step">1</span> Load Your Profile</div>
+
+    <div id="profile-load-ui">
+      <div class="profile-load-row">
+        <button class="btn btn-primary" id="btn-load-file">
+          &#128196; Load Profile JSON
+        </button>
+        <input type="file" id="file-input" accept=".json" style="display:none">
+        <button class="btn btn-ghost" id="btn-paste-toggle">Paste JSON</button>
+      </div>
+      <p class="profile-hint">Load a <code>profiles/*.json</code> file &mdash; or <a href="#" id="link-paste-toggle">paste JSON directly</a>.</p>
+
+      <div class="paste-area" id="paste-area">
+        <textarea id="json-paste" placeholder='Paste your profile JSON here...&#10;&#10;{"name": "Your Name", "title": "...", ...}'></textarea>
+        <div class="paste-actions">
+          <button class="btn btn-primary" id="btn-apply-paste">Apply JSON</button>
+          <button class="btn btn-ghost" id="btn-cancel-paste">Cancel</button>
+        </div>
+      </div>
+
+      <div class="error-msg" id="profile-error"></div>
+    </div>
+
+    <div id="profile-summary-bar">
+      <div class="profile-avatar" id="profile-avatar"></div>
+      <div class="profile-info">
+        <strong id="profile-name-display"></strong>
+        <span id="profile-role-display"></span>
+      </div>
+      <button class="btn btn-danger" id="btn-change-profile">Change</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: Template -->
+  <section class="card" id="template-section">
+    <div class="card-title"><span class="step">2</span> Select Post Type</div>
+    <div class="template-grid" id="template-grid">
+      <div class="template-card" data-template="new-job">
+        <div class="tc-icon">&#127775;</div>
+        <div class="tc-name">New Job / Career Milestone</div>
+        <div class="tc-desc">Announce a new role or career move</div>
+      </div>
+      <div class="template-card" data-template="achievement">
+        <div class="tc-icon">&#128200;</div>
+        <div class="tc-name">Technical Achievement</div>
+        <div class="tc-desc">Share a project win or delivery impact</div>
+      </div>
+      <div class="template-card" data-template="award">
+        <div class="tc-icon">&#127942;</div>
+        <div class="tc-name">Award &amp; Recognition</div>
+        <div class="tc-desc">Celebrate an award or commendation</div>
+      </div>
+      <div class="template-card" data-template="insight">
+        <div class="tc-icon">&#128161;</div>
+        <div class="tc-name">Tech Insight</div>
+        <div class="tc-desc">Share a thought leadership opinion</div>
+      </div>
+      <div class="template-card" data-template="learning">
+        <div class="tc-icon">&#127891;</div>
+        <div class="tc-name">Learning &amp; Certification</div>
+        <div class="tc-desc">Announce a new cert or course</div>
+      </div>
+      <div class="template-card" data-template="ai-news">
+        <div class="tc-icon">&#129302;</div>
+        <div class="tc-name">AI &amp; Industry News</div>
+        <div class="tc-desc">Comment on a trending AI or tech story</div>
+      </div>
+      <div class="template-card" data-template="general">
+        <div class="tc-icon">&#128172;</div>
+        <div class="tc-name">General Update</div>
+        <div class="tc-desc">Share any professional update</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: Configure -->
+  <section class="card" id="config-section">
+    <div class="card-title"><span class="step">3</span> Configure Your Post</div>
+
+    <p class="section-label">Global Settings</p>
+
+    <div class="global-config-grid">
+      <div class="form-group">
+        <label for="tone-select">Tone</label>
+        <select id="tone-select">
+          <option value="professional">Professional</option>
+          <option value="conversational">Conversational</option>
+          <option value="storytelling">Storytelling</option>
+          <option value="inspirational">Inspirational</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="length-select">Post Length</label>
+        <select id="length-select">
+          <option value="short">Short (~150 words)</option>
+          <option value="medium" selected>Medium (~250 words)</option>
+          <option value="long">Long (~400 words)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="checkbox-row" id="hashtag-checkbox-row">
+      <input type="checkbox" id="include-hashtags" checked>
+      <span>Include hashtags <span style="color:var(--text-secondary);font-size:0.8rem">(auto-suggested from your profile)</span></span>
+    </div>
+
+    <div id="hashtag-chip-area">
+      <div class="chip-container" id="hashtag-chips"></div>
+    </div>
+
+    <div class="checkbox-row" style="margin-top:10px">
+      <input type="checkbox" id="include-cta" checked>
+      <span>Include a call-to-action</span>
+    </div>
+
+    <div class="form-group" id="cta-text-group" style="margin-top:4px">
+      <label for="cta-text">CTA override <span class="hint">(leave blank for AI to decide)</span></label>
+      <input type="text" id="cta-text" placeholder="e.g. DM me if you want to discuss this further">
+    </div>
+
+    <hr class="divider">
+
+    <p class="section-label" id="template-fields-label">Post Details</p>
+    <div id="template-fields"></div>
+  </section>
+
+  <!-- Output -->
+  <section class="card" id="output-section">
+    <div class="card-title"><span class="step">4</span> Your Generated Prompt</div>
+    <p class="output-hint">
+      Copy the prompt below and paste it into <strong>ChatGPT</strong> or <strong>Claude</strong> to generate your LinkedIn post.
+    </p>
+    <textarea id="output-prompt" readonly></textarea>
+    <div class="output-actions">
+      <button class="btn btn-primary" id="btn-copy">&#128203; Copy to Clipboard</button>
+      <span id="copy-feedback">&#10003; Copied!</span>
+      <button class="btn btn-ghost" id="btn-regenerate">Regenerate</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Sticky generate bar -->
+<div id="generate-bar">
+  <div class="inner">
+    <button class="btn btn-primary" id="btn-generate">&#9889; Generate Prompt</button>
+  </div>
+  <div id="validation-error"></div>
+</div>
+
+<script>
+  // ─── Constants ───────────────────────────────────────────────────────────────
+
+  const TONE_DESCRIPTIONS = {
+    professional:   'Formal but warm, clear and authoritative, no slang',
+    conversational: 'Casual and direct, like talking to a colleague over coffee',
+    storytelling:   'Narrative arc with beginning, tension, and resolution — draw the reader through a story',
+    inspirational:  'Motivating and forward-looking, appeal to the reader\'s ambition and growth mindset'
+  };
+
+  const LENGTH_WORDS = { short: 150, medium: 250, long: 400 };
+
+  const HASHTAG_MAP = {
+    'new-job':     ['backend', 'methodologies'],
+    'achievement': ['backend', 'cloud', 'devops'],
+    'award':       ['methodologies', 'backend'],
+    'insight':     ['backend', 'security', 'cloud', 'aiTools'],
+    'learning':    ['cloud', 'backend', 'devops'],
+    'ai-news':     ['aiTools', 'backend', 'cloud'],
+    'general':     ['backend', 'methodologies']
+  };
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+
+  const state = {
+    profile: null,
+    activeTemplate: null,
+    activeHashtags: new Set()
+  };
+
+  // ─── Template field definitions ───────────────────────────────────────────────
+
+  function getTemplateFields(templateKey, profile) {
+    switch (templateKey) {
+      case 'new-job': return [
+        { id: 'new-role', label: 'New Job Title', type: 'text', placeholder: 'e.g. Principal Software Engineer', required: true, prefill: profile.currentRole.title },
+        { id: 'new-company', label: 'Company', type: 'text', placeholder: 'e.g. Acme Corp', required: true, prefill: profile.currentRole.company },
+        { id: 'start-date', label: 'Start Date', type: 'text', placeholder: 'e.g. May 2026', required: false, prefill: profile.currentRole.startDate },
+        { id: 'key-excitement', label: 'What excites you most about this role?', type: 'textarea', placeholder: 'e.g. The scale of the problem, the team culture, the tech stack...', required: true },
+        { id: 'shoutouts', label: 'Anyone to thank or shoutout?', type: 'text', placeholder: 'e.g. Hiring manager, mentor, former team', required: false }
+      ];
+
+      case 'achievement': return [
+        { id: 'achievement-title', label: 'What was achieved?', type: 'text', placeholder: 'One sentence summary of the achievement', required: true },
+        { id: 'tech-used', label: 'Key technologies used', type: 'text', placeholder: 'e.g. Java 21, Spring Batch, Kubernetes', required: false, prefill: profile.currentRole.technologies.slice(0, 5).join(', ') },
+        { id: 'impact-metric', label: 'Measurable impact', type: 'text', placeholder: 'e.g. Reduced processing time by 40%', required: false },
+        { id: 'problem-solved', label: 'What problem did it solve?', type: 'textarea', placeholder: 'Describe the challenge or pain point that was addressed', required: true },
+        { id: 'lessons-learned', label: 'Key lesson or insight gained', type: 'textarea', placeholder: 'Optional — what would you do differently or what did you learn?', required: false }
+      ];
+
+      case 'award': {
+        const awardOptions = profile.awards.map(a =>
+          `<option value="${esc(a.title)}" data-issuer="${esc(a.issuer)}" data-date="${esc(a.date)}">${esc(a.title)} — ${esc(a.issuer)}</option>`
+        ).join('') + '<option value="__other__">Other (type below)...</option>';
+        return [
+          { id: 'award-name', label: 'Award', type: 'select', options: awardOptions, required: true },
+          { id: 'award-issuer', label: 'Awarded by', type: 'text', placeholder: 'Organisation that gave the award', required: true, prefill: profile.awards[0]?.issuer },
+          { id: 'award-date', label: 'When?', type: 'text', placeholder: 'e.g. Apr 2025', required: false, prefill: profile.awards[0]?.date },
+          { id: 'why-meaningful', label: 'Why is this award meaningful to you?', type: 'textarea', placeholder: 'What effort or value does it recognise?', required: true },
+          { id: 'team-credit', label: 'Anyone who helped you earn this?', type: 'text', placeholder: 'Optional — colleagues, mentors, team', required: false }
+        ];
+      }
+
+      case 'insight': return [
+        { id: 'insight-topic', label: 'What is your insight or opinion?', type: 'textarea', placeholder: 'State your bold opinion clearly in 1-2 sentences', required: true },
+        { id: 'tech-context', label: 'Which technology or trend does this relate to?', type: 'text', placeholder: 'e.g. Microservices, AI coding assistants, OAuth 2.0', required: true },
+        { id: 'real-example', label: 'A real example from your own experience', type: 'textarea', placeholder: 'Recommended — concrete experience makes thought leadership credible', required: false },
+        { id: 'contrarian-angle', label: 'Common misconception you want to challenge', type: 'text', placeholder: 'Optional — what do most people get wrong about this?', required: false }
+      ];
+
+      case 'learning': {
+        const certOptions = profile.certifications.map(c =>
+          `<option value="${esc(c.title)}" data-issuer="${esc(c.issuer)}">${esc(c.title)} — ${esc(c.issuer)}</option>`
+        ).join('') + '<option value="__other__">Other (type below)...</option>';
+        return [
+          { id: 'cert-name', label: 'Certification / Course', type: 'select', options: certOptions, required: true },
+          { id: 'cert-issuer', label: 'Issuing body', type: 'text', placeholder: 'e.g. Google, AWS, Coursera', required: false, prefill: profile.certifications[0]?.issuer },
+          { id: 'completion-date', label: 'When did you complete it?', type: 'text', placeholder: 'e.g. April 2026', required: false },
+          { id: 'why-pursued', label: 'Why did you pursue this?', type: 'textarea', placeholder: 'What gap were you filling or goal were you working toward?', required: true },
+          { id: 'key-learning', label: 'Most valuable thing you learned', type: 'textarea', placeholder: 'A specific skill or capability you now have', required: true }
+        ];
+      }
+
+      case 'ai-news': return [
+        { id: 'news-headline', label: 'News headline or topic', type: 'text', placeholder: 'e.g. GPT-5 released, Google announces Gemini Ultra 2...', required: true },
+        { id: 'news-source', label: 'Source', type: 'text', placeholder: 'e.g. TechCrunch, The Verge, official blog', required: false },
+        { id: 'personal-take', label: 'Your personal take on this news', type: 'textarea', placeholder: 'What do YOU think about it? Be specific and opinionated.', required: true },
+        { id: 'field-impact', label: 'How does it affect your field?', type: 'textarea', placeholder: 'How does this news impact your domain, your daily work, or your industry?', required: true },
+        { id: 'ai-tools-note', label: 'Your current AI tools experience', type: 'text', placeholder: 'e.g. I use GitHub Copilot and Claude daily in my workflow', required: false, prefill: profile.skills.aiTools ? `I use ${profile.skills.aiTools.join(', ')} in my daily workflow` : '' }
+      ];
+
+      case 'general': return [
+        { id: 'update-topic', label: 'What is the update about?', type: 'text', placeholder: 'One sentence summary', required: true },
+        { id: 'update-detail', label: 'Tell us more', type: 'textarea', placeholder: 'Expand on the update with context and specifics', required: true },
+        { id: 'relevance', label: 'Why is this relevant to your network?', type: 'text', placeholder: 'e.g. Lessons learned, useful resource, industry relevance', required: false },
+        { id: 'mood', label: 'How do you feel about it?', type: 'select', options: '<option value="positive">Positive / Excited</option><option value="reflective">Reflective</option><option value="motivated">Motivated</option><option value="curious">Curious</option>', required: false }
+      ];
+
+      default: return [];
+    }
+  }
+
+  // ─── Prompt builders ──────────────────────────────────────────────────────────
+
+  const PROMPT_BUILDERS = {
+
+    'new-job': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const prev = p.experience[0];
+      return `You are a LinkedIn content writer. Write a LinkedIn post announcing a new job or career milestone.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- New role: ${f['new-role']} at ${f['new-company']}${f['start-date'] ? ` (starting ${f['start-date']})` : ''}
+- Years of experience: ${p.yearsExperience}+ years in ${p.currentRole.domain}
+- Previously: ${prev ? `${prev.title} at ${prev.company}` : p.currentRole.title + ' at ' + p.currentRole.company}
+- Background summary: ${p.summary}
+
+KEY DETAILS TO INCLUDE:
+- What excites them about this role: ${f['key-excitement']}${f['shoutouts'] ? `\n- Shoutouts / thanks to: ${f['shoutouts']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Do NOT use overused LinkedIn openers like "thrilled", "excited to announce", "humbled", or "pleased to share"
+- Open with a hook — a bold statement, a reflection, or a question. Not a formal announcement.
+- Make it feel genuine and human, not like a press release
+- Reference the person's background naturally to show credibility${hashtags.length ? `\n- End with these hashtags: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with a call-to-action: ${ctaText || 'invite connections to reach out or share similar career experiences'}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble, no commentary, no "here is your post".`;
+    },
+
+    'achievement': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      return `You are a LinkedIn content writer specialising in technical achievements for senior engineers.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Role: ${p.currentRole.title} at ${p.currentRole.company}${p.currentRole.client ? ` (client: ${p.currentRole.client})` : ''}
+- Domain: ${p.currentRole.domain}
+- Experience: ${p.yearsExperience}+ years in enterprise engineering
+
+ACHIEVEMENT TO WRITE ABOUT:
+- What was achieved: ${f['achievement-title']}${f['tech-used'] ? `\n- Technologies: ${f['tech-used']}` : ''}${f['impact-metric'] ? `\n- Measurable impact: ${f['impact-metric']}` : ''}
+- Problem it solved: ${f['problem-solved']}${f['lessons-learned'] ? `\n- Lesson / insight: ${f['lessons-learned']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Lead with the outcome or impact first, then explain the challenge and how it was solved — reverse the typical story order for maximum hook
+- Be specific with numbers and technologies — vagueness kills technical posts
+- Write for an audience of senior engineers, architects, and tech leads
+- Avoid: "I'm proud to share", "game-changer", "revolutionary", "I'm excited to announce"${hashtags.length ? `\n- End with: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with: ${ctaText || "a question that invites peers to share their own approach, e.g. 'What's your go-to strategy for X?'"}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'award': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const awardHistory = p.awards.map(a => `  - ${a.title} (${a.issuer}, ${a.date})`).join('\n');
+      return `You are a LinkedIn content writer helping a professional authentically share an award or recognition.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Role: ${p.currentRole.title} at ${p.currentRole.company}
+- Domain: ${p.currentRole.domain}
+
+AWARD DETAILS:
+- Award: ${f['award-name'] === '__other__' ? f['award-issuer'] : f['award-name']}
+- Issued by: ${f['award-issuer']}${f['award-date'] ? `\n- Date: ${f['award-date']}` : ''}
+- Why it's meaningful: ${f['why-meaningful']}${f['team-credit'] ? `\n- Credit to: ${f['team-credit']}` : ''}
+
+THEIR AWARD HISTORY (for context — do not list all of these, just use as background):
+${awardHistory}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Express genuine gratitude without sounding boastful — let the achievement speak, not the ego
+- Anchor the award in a specific effort, value, or project — not generic "hard work"
+- Mention team or organisation authentically if team credit is provided
+- Avoid these clichés: "humbled", "honoured to share", "couldn't have done it without", "beyond grateful"${hashtags.length ? `\n- End with: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with: ${ctaText || 'an encouragement to others in the industry or an invitation to connect'}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'insight': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const topSkills = [...(p.skills.backend || []), ...(p.skills.cloud || [])].slice(0, 8).join(', ');
+      return `You are a LinkedIn ghostwriter specialising in thought leadership posts for senior engineers.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Title: ${p.title} with ${p.yearsExperience}+ years of experience
+- Core expertise: ${topSkills}
+- Background: ${p.summary}
+
+INSIGHT TO DEVELOP:
+- Core opinion / insight: ${f['insight-topic']}
+- Technology or trend context: ${f['tech-context']}${f['real-example'] ? `\n- Real-world example from their experience: ${f['real-example']}` : ''}${f['contrarian-angle'] ? `\n- Misconception to challenge: ${f['contrarian-angle']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Start with a bold, specific statement — NOT a question, NOT a definition
+- Recommended structure: bold claim → brief context → personal experience as evidence → practical takeaway for the reader
+- Speak as a practitioner, not a theorist — use concrete specifics from the person's background
+- Own the opinion — do not hedge excessively with "in my opinion", "I think", "perhaps"
+- Target audience: senior developers, architects, engineering managers${hashtags.length ? `\n- End with: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with: ${ctaText || "a thought-provoking question that invites the reader to share their experience or respectfully disagree"}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'learning': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const backendSkills = (p.skills.backend || []).slice(0, 5).join(', ');
+      const cloudSkills = (p.skills.cloud || []).slice(0, 4).join(', ');
+      return `You are a LinkedIn content writer helping a senior engineer share a learning achievement.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Role: ${p.currentRole.title} with ${p.yearsExperience} years of experience
+- Technical background: ${backendSkills} and ${cloudSkills}
+- Current domain: ${p.currentRole.domain}
+
+CERTIFICATION / LEARNING DETAILS:
+- Certification: ${f['cert-name'] === '__other__' ? f['cert-issuer'] : f['cert-name']}${f['cert-issuer'] ? `\n- Issued by: ${f['cert-issuer']}` : ''}${f['completion-date'] ? `\n- Completed: ${f['completion-date']}` : ''}
+- Why pursued: ${f['why-pursued']}
+- Key learning: ${f['key-learning']}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Connect the certification to real-world application in their current domain (${p.currentRole.domain})
+- Emphasise the WHY behind pursuing it — this is what makes the post interesting, not the certification itself
+- Share a specific capability or skill they now have that they didn't before
+- Avoid: "excited to announce I passed", "hard work pays off", "proud to share"${hashtags.length ? `\n- End with: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with: ${ctaText || 'a recommendation to others considering the same path, or a question inviting discussion'}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'ai-news': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const aiTools = (p.skills.aiTools || []).join(', ');
+      return `You are a LinkedIn content writer helping a senior software engineer comment on an AI or tech industry news story.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Role: ${p.currentRole.title} at ${p.currentRole.company}, working in ${p.currentRole.domain}
+- Years of experience: ${p.yearsExperience}+ years in enterprise software engineering
+- AI tools they use daily: ${aiTools || f['ai-tools-note']}
+- Technical background: ${p.summary}
+
+NEWS STORY:
+- Headline / topic: ${f['news-headline']}${f['news-source'] ? `\n- Source: ${f['news-source']}` : ''}
+- Their personal take: ${f['personal-take']}
+- How it affects their field: ${f['field-impact']}${f['ai-tools-note'] ? `\n- Their AI tools context: ${f['ai-tools-note']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Open with the news or topic immediately — do not start with "I read an article about..."
+- Lead with the person's reaction or take, not just a summary of the news
+- Bring in their practitioner perspective: how does this affect their day-to-day engineering, their domain, or their team?
+- Mention their hands-on AI tooling experience to add authentic credibility — they are not just observing, they are living this
+- Be specific and opinionated — neutral commentary gets no engagement
+- Avoid: "This is a game-changer", "AI will replace jobs", "exciting times", vague hype${hashtags.length ? `\n- End with: ${hashtags.join(' ')}` : ''}${cta ? `\n- Close with: ${ctaText || "an open question to your network — what do they think, or how are they seeing this play out in their own work?"}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'general': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
+      const moodMap = { positive: 'Positive and enthusiastic', reflective: 'Reflective and thoughtful', motivated: 'Motivated and determined', curious: 'Curious and open' };
+      return `You are a LinkedIn content writer. Write a genuine professional update post.
+
+PERSON DETAILS:
+- Name: ${p.name}
+- Role: ${p.currentRole.title} at ${p.currentRole.company}
+- Background: ${p.yearsExperience}+ years in ${p.currentRole.domain}
+
+UPDATE DETAILS:
+- Topic: ${f['update-topic']}
+- Details: ${f['update-detail']}${f['relevance'] ? `\n- Why it's relevant to their network: ${f['relevance']}` : ''}
+- Mood / feeling: ${moodMap[f['mood']] || 'Positive'}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone]}
+- Target length: approximately ${words} words
+- Write in first person
+- Make it feel like a real person wrote it — not a press release or announcement
+- Anchor it in something specific and authentic — generalities lose readers
+- Avoid corporate jargon, buzzwords, and filler phrases like "I'm pleased to share" or "game-changer"${hashtags.length ? `\n- Append: ${hashtags.join(' ')}` : ''}${cta ? `\n- End with: ${ctaText || 'an open question or genuine invitation to connect or discuss'}` : ''}
+
+IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    }
+  };
+
+  // ─── Utilities ────────────────────────────────────────────────────────────────
+
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function toHashtag(skill) {
+    return '#' + skill.replace(/[\s().\-\/]/g, '').replace(/[+]/g, 'Plus').replace(/[^a-zA-Z0-9]/g, '');
+  }
+
+  function getInitials(name) {
+    return name.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  function collectFieldValues() {
+    const vals = {};
+    document.querySelectorAll('#template-fields input, #template-fields textarea, #template-fields select').forEach(el => {
+      vals[el.id] = el.value.trim();
+    });
+    return vals;
+  }
+
+  function showError(el, msg) {
+    el.style.display = 'block';
+    el.textContent = msg;
+  }
+
+  function hideError(el) {
+    el.style.display = 'none';
+  }
+
+  // ─── Profile loading ──────────────────────────────────────────────────────────
+
+  function validateProfile(obj) {
+    if (typeof obj !== 'object' || obj === null) throw new Error('Profile must be a JSON object.');
+    if (!obj.name) throw new Error('Missing required field: "name"');
+    if (!obj.currentRole || typeof obj.currentRole !== 'object') throw new Error('Missing required field: "currentRole"');
+    if (!obj.skills || typeof obj.skills !== 'object') throw new Error('Missing required field: "skills"');
+  }
+
+  function applyProfile(obj) {
+    validateProfile(obj);
+    state.profile = obj;
+    renderProfileSummary();
+    document.getElementById('template-section').classList.add('active');
+  }
+
+  function renderProfileSummary() {
+    const p = state.profile;
+    document.getElementById('profile-load-ui').style.display = 'none';
+    const bar = document.getElementById('profile-summary-bar');
+    bar.style.display = 'flex';
+    document.getElementById('profile-avatar').textContent = getInitials(p.name);
+    document.getElementById('profile-name-display').textContent = p.name;
+    document.getElementById('profile-role-display').textContent =
+      `${p.currentRole.title} at ${p.currentRole.company}${p.currentRole.client ? ` · ${p.currentRole.client}` : ''}`;
+  }
+
+  function clearProfile() {
+    state.profile = null;
+    state.activeTemplate = null;
+    state.activeHashtags = new Set();
+
+    document.getElementById('profile-load-ui').style.display = 'block';
+    document.getElementById('profile-summary-bar').style.display = 'none';
+    hideError(document.getElementById('profile-error'));
+
+    document.getElementById('template-section').classList.remove('active');
+    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+
+    document.getElementById('config-section').style.display = 'none';
+    document.getElementById('generate-bar').style.display = 'none';
+    document.getElementById('output-section').style.display = 'none';
+    document.getElementById('template-fields').innerHTML = '';
+    document.getElementById('hashtag-chips').innerHTML = '';
+    document.getElementById('hashtag-chip-area').style.display = 'none';
+
+    document.getElementById('paste-area').style.display = 'none';
+    document.getElementById('json-paste').value = '';
+  }
+
+  // ─── Template rendering ───────────────────────────────────────────────────────
+
+  function selectTemplate(key) {
+    state.activeTemplate = key;
+    document.querySelectorAll('.template-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.template === key);
+    });
+
+    const fields = getTemplateFields(key, state.profile);
+    renderTemplateFields(fields);
+    renderHashtagChips(key);
+
+    document.getElementById('config-section').style.display = 'block';
+    document.getElementById('generate-bar').style.display = 'block';
+    document.getElementById('output-section').style.display = 'none';
+
+    document.getElementById('config-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Wire award/cert auto-fill
+    const awardSel = document.getElementById('award-name');
+    if (awardSel) {
+      awardSel.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        const issuerEl = document.getElementById('award-issuer');
+        const dateEl = document.getElementById('award-date');
+        if (this.value === '__other__') {
+          if (issuerEl) { issuerEl.value = ''; issuerEl.focus(); }
+          if (dateEl) dateEl.value = '';
+        } else {
+          if (issuerEl) issuerEl.value = opt.dataset.issuer || '';
+          if (dateEl) dateEl.value = opt.dataset.date || '';
+        }
+      });
+    }
+
+    const certSel = document.getElementById('cert-name');
+    if (certSel) {
+      certSel.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        const issuerEl = document.getElementById('cert-issuer');
+        if (this.value === '__other__') {
+          if (issuerEl) { issuerEl.value = ''; issuerEl.focus(); }
+        } else {
+          if (issuerEl) issuerEl.value = opt.dataset.issuer || '';
+        }
+      });
+    }
+  }
+
+  function renderTemplateFields(fields) {
+    const container = document.getElementById('template-fields');
+    container.innerHTML = fields.map(f => {
+      const requiredMark = f.required ? ' <span style="color:var(--red)">*</span>' : '';
+      const hint = f.hint ? ` <span class="hint">${f.hint}</span>` : '';
+
+      if (f.type === 'select') {
+        return `<div class="form-group">
+          <label for="${f.id}">${f.label}${requiredMark}${hint}</label>
+          <select id="${f.id}">${f.options}</select>
+        </div>`;
+      }
+      if (f.type === 'textarea') {
+        return `<div class="form-group">
+          <label for="${f.id}">${f.label}${requiredMark}${hint}</label>
+          <textarea id="${f.id}" placeholder="${esc(f.placeholder || '')}">${esc(f.prefill || '')}</textarea>
+        </div>`;
+      }
+      return `<div class="form-group">
+        <label for="${f.id}">${f.label}${requiredMark}${hint}</label>
+        <input type="text" id="${f.id}" placeholder="${esc(f.placeholder || '')}" value="${esc(f.prefill || '')}">
+      </div>`;
+    }).join('');
+  }
+
+  function renderHashtagChips(templateKey) {
+    const categories = HASHTAG_MAP[templateKey] || [];
+    const profile = state.profile;
+    const seen = new Set();
+    const skills = [];
+    categories.forEach(cat => {
+      (profile.skills[cat] || []).forEach(s => {
+        if (!seen.has(s)) { seen.add(s); skills.push(s); }
+      });
+    });
+    const tags = skills.slice(0, 14).map(toHashtag);
+    state.activeHashtags = new Set(tags);
+
+    const container = document.getElementById('hashtag-chips');
+    container.innerHTML = tags.map(tag =>
+      `<span class="chip" data-tag="${esc(tag)}">${esc(tag)}</span>`
+    ).join('');
+
+    container.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        const tag = this.dataset.tag;
+        if (state.activeHashtags.has(tag)) {
+          state.activeHashtags.delete(tag);
+          this.classList.add('deselected');
+        } else {
+          state.activeHashtags.add(tag);
+          this.classList.remove('deselected');
+        }
+      });
+    });
+
+    const chipArea = document.getElementById('hashtag-chip-area');
+    if (document.getElementById('include-hashtags').checked) {
+      chipArea.style.display = 'block';
+    }
+  }
+
+  // ─── Prompt generation ────────────────────────────────────────────────────────
+
+  function validateRequiredFields() {
+    let firstError = null;
+    const fields = getTemplateFields(state.activeTemplate, state.profile);
+    fields.forEach(f => {
+      if (!f.required) return;
+      const el = document.getElementById(f.id);
+      if (!el) return;
+      if (!el.value.trim()) {
+        el.classList.add('field-error');
+        if (!firstError) firstError = el;
+      } else {
+        el.classList.remove('field-error');
+      }
+    });
+    return firstError;
+  }
+
+  function generatePrompt() {
+    const firstError = validateRequiredFields();
+    if (firstError) {
+      const errEl = document.getElementById('validation-error');
+      showError(errEl, 'Please fill in all required fields (marked with *).');
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.focus();
+      return;
+    }
+    hideError(document.getElementById('validation-error'));
+
+    const includeHashtags = document.getElementById('include-hashtags').checked;
+    const includeCta = document.getElementById('include-cta').checked;
+    const ctaText = document.getElementById('cta-text').value.trim();
+    const tone = document.getElementById('tone-select').value;
+    const length = document.getElementById('length-select').value;
+
+    const ctx = {
+      profile: state.profile,
+      tone,
+      words: LENGTH_WORDS[length],
+      hashtags: includeHashtags ? [...state.activeHashtags] : [],
+      cta: includeCta,
+      ctaText,
+      fields: collectFieldValues()
+    };
+
+    const builder = PROMPT_BUILDERS[state.activeTemplate];
+    if (!builder) return;
+
+    const prompt = builder(ctx);
+    document.getElementById('output-prompt').value = prompt;
+    document.getElementById('output-section').style.display = 'block';
+    document.getElementById('output-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─── Clipboard ────────────────────────────────────────────────────────────────
+
+  function copyToClipboard() {
+    const textarea = document.getElementById('output-prompt');
+    const feedback = document.getElementById('copy-feedback');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textarea.value).then(() => showCopied(feedback));
+    } else {
+      textarea.select();
+      document.execCommand('copy');
+      showCopied(feedback);
+    }
+  }
+
+  function showCopied(feedback) {
+    feedback.style.display = 'inline';
+    setTimeout(() => { feedback.style.display = 'none'; }, 2200);
+  }
+
+  // ─── Event wiring ─────────────────────────────────────────────────────────────
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // File picker
+    const fileInput = document.getElementById('file-input');
+    document.getElementById('btn-load-file').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const obj = JSON.parse(ev.target.result);
+          applyProfile(obj);
+          hideError(document.getElementById('profile-error'));
+        } catch (err) {
+          showError(document.getElementById('profile-error'), 'Could not load profile: ' + err.message);
+        }
+        fileInput.value = '';
+      };
+      reader.readAsText(file);
+    });
+
+    // Paste toggle
+    const pasteArea = document.getElementById('paste-area');
+    const togglePaste = () => {
+      const visible = pasteArea.style.display === 'block';
+      pasteArea.style.display = visible ? 'none' : 'block';
+      if (!visible) document.getElementById('json-paste').focus();
+    };
+    document.getElementById('btn-paste-toggle').addEventListener('click', togglePaste);
+    document.getElementById('link-paste-toggle').addEventListener('click', (e) => { e.preventDefault(); togglePaste(); });
+    document.getElementById('btn-cancel-paste').addEventListener('click', () => { pasteArea.style.display = 'none'; });
+
+    document.getElementById('btn-apply-paste').addEventListener('click', () => {
+      const raw = document.getElementById('json-paste').value.trim();
+      if (!raw) return;
+      try {
+        const obj = JSON.parse(raw);
+        applyProfile(obj);
+        pasteArea.style.display = 'none';
+        hideError(document.getElementById('profile-error'));
+      } catch (err) {
+        showError(document.getElementById('profile-error'), 'Invalid JSON: ' + err.message);
+      }
+    });
+
+    // Change profile
+    document.getElementById('btn-change-profile').addEventListener('click', clearProfile);
+
+    // Template cards
+    document.getElementById('template-grid').addEventListener('click', (e) => {
+      const card = e.target.closest('.template-card');
+      if (!card || !state.profile) return;
+      selectTemplate(card.dataset.template);
+    });
+
+    // Hashtag checkbox
+    document.getElementById('include-hashtags').addEventListener('change', function() {
+      document.getElementById('hashtag-chip-area').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // CTA checkbox
+    document.getElementById('include-cta').addEventListener('change', function() {
+      document.getElementById('cta-text-group').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Clear field-error on input
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('field-error') && e.target.value.trim()) {
+        e.target.classList.remove('field-error');
+      }
+    });
+
+    // Generate
+    document.getElementById('btn-generate').addEventListener('click', generatePrompt);
+
+    // Regenerate
+    document.getElementById('btn-regenerate').addEventListener('click', generatePrompt);
+
+    // Copy
+    document.getElementById('btn-copy').addEventListener('click', copyToClipboard);
+  });
+</script>
+</body>
+</html>
