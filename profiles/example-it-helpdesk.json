@@ -1,0 +1,98 @@
+{
+  "name": "Jordan Mitchell",
+  "title": "IT Support Analyst",
+  "location": "Manchester, UK",
+  "email": "jordan.mitchell@example.com",
+  "phone": null,
+  "linkedin": "linkedin.com/in/jordan-mitchell-itsupport",
+  "summary": "IT Support Analyst with 4 years of experience providing 1st and 2nd line support across corporate and enterprise environments. Skilled in incident management, endpoint administration, and cloud workplace tools. Known for fast ticket resolution, clear user communication, and a calm approach under pressure.",
+  "yearsExperience": 4,
+  "domain": "IT Service Management",
+  "primarySkillCategories": ["support", "infrastructure", "cloud", "tools", "methodologies"],
+  "currentRole": {
+    "title": "IT Support Analyst (2nd Line)",
+    "company": "Amey plc",
+    "client": null,
+    "domain": "Infrastructure / Managed Services",
+    "startDate": "Jan 2023",
+    "endDate": null,
+    "location": "Manchester, UK",
+    "highlights": [
+      "Maintained 94% SLA compliance across 800+ monthly tickets on ServiceNow, consistently above the team average of 88%",
+      "Led the rollout of Microsoft Intune MDM for 350 devices, reducing IT onboarding time from 3 days to 4 hours",
+      "Created a self-service knowledge base of 60+ articles in SharePoint, deflecting 20% of repetitive L1 queries"
+    ],
+    "technologies": ["ServiceNow", "Microsoft 365", "Intune MDM", "Active Directory", "Windows 11", "Azure AD", "Teams", "PowerShell"]
+  },
+  "experience": [
+    {
+      "title": "1st Line IT Support Technician",
+      "company": "Capita",
+      "client": "NHS Trust",
+      "startDate": "Sep 2021",
+      "endDate": "Dec 2022",
+      "location": "Manchester, UK",
+      "domain": "Healthcare IT",
+      "highlights": [
+        "Handled 60-80 support tickets daily (phone, email, walk-up) for clinical and administrative staff across 3 hospital sites",
+        "Resolved 78% of incidents at first contact, exceeding the team FCR target of 70%",
+        "Supported EMIS Health and SystmOne clinical systems, escalating critical outages within SLA thresholds"
+      ],
+      "technologies": ["Jira Service Management", "EMIS Health", "SystmOne", "Active Directory", "Windows 10", "Citrix"]
+    },
+    {
+      "title": "IT Support Apprentice",
+      "company": "DXC Technology",
+      "client": null,
+      "startDate": "Sep 2020",
+      "endDate": "Aug 2021",
+      "location": "Manchester, UK",
+      "domain": "Managed IT Services",
+      "highlights": [
+        "Completed Level 3 IT Support Apprenticeship while working full-time on the service desk",
+        "Assisted with hardware provisioning, imaging, and asset management for 200+ end-user devices"
+      ],
+      "technologies": ["ServiceNow", "Windows 10", "SCCM", "Active Directory", "Zoom", "Cisco Webex"]
+    }
+  ],
+  "skills": {
+    "support": ["1st & 2nd Line Support", "Incident Management", "Problem Management", "Root Cause Analysis", "SLA Management", "Remote Desktop Support", "User Training"],
+    "infrastructure": ["Active Directory", "Windows Server 2019/2022", "DNS & DHCP", "Group Policy", "PowerShell Scripting", "Hardware Troubleshooting", "Network Basics (TCP/IP, VPN)"],
+    "cloud": ["Microsoft 365 (Exchange, Teams, SharePoint)", "Azure Active Directory", "Microsoft Intune MDM", "OneDrive for Business"],
+    "tools": ["ServiceNow", "Jira Service Management", "Freshdesk", "Cisco Webex", "Zoom", "SCCM", "Citrix"],
+    "methodologies": ["ITIL v4 Foundation", "Agile (awareness)", "Knowledge-Centred Service (KCS)"]
+  },
+  "certifications": [
+    {
+      "title": "ITIL 4 Foundation",
+      "issuer": "Axelos",
+      "shortName": "ITIL 4"
+    },
+    {
+      "title": "Microsoft 365 Certified: Fundamentals",
+      "issuer": "Microsoft",
+      "shortName": "MS-900"
+    },
+    {
+      "title": "CompTIA A+",
+      "issuer": "CompTIA",
+      "shortName": "A+"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Employee of the Quarter",
+      "issuer": "Amey plc",
+      "date": "Oct 2023"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Level 3 IT Support Apprenticeship",
+      "field": "Information Technology",
+      "institution": "DXC Technology / Cheshire College",
+      "location": "Manchester, UK",
+      "period": "Sep 2020 - Aug 2021"
+    }
+  ]
+}
