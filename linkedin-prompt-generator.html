@@ -484,65 +484,6 @@
 
     .profile-hint a:hover { text-decoration: underline; }
 
-    /* ── API settings ──────────────────────────────────────────────────── */
-    .api-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 9px;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-left: 8px;
-    }
-    .api-badge--none { background: #FFF3E0; color: #E65100; }
-    .api-badge--set  { background: #E8F5E9; color: var(--green); }
-
-    #api-key-notice {
-      display: none;
-      font-size: 0.8rem;
-      color: #E65100;
-      margin-top: 6px;
-      text-align: center;
-    }
-    #api-key-notice a { color: var(--blue); text-decoration: underline; }
-
-    .api-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      flex-wrap: wrap;
-    }
-    .api-row .form-group { flex: 1; min-width: 180px; margin-bottom: 0; }
-
-    /* ── Spinner & streaming ────────────────────────────────────────────── */
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid var(--blue-light);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      flex-shrink: 0;
-    }
-
-    #streaming-status {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      background: var(--blue-light);
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      color: var(--blue-dark);
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-
     /* ── Output tabs ────────────────────────────────────────────────────── */
     .output-tabs {
       display: flex;
@@ -569,25 +510,17 @@
     .tab-btn.active { background: var(--blue); color: #fff; }
     .tab-btn:not(.active):hover { background: var(--blue-light); color: var(--blue); }
 
-    /* ── AI Generate button ─────────────────────────────────────────────── */
-    #btn-generate-ai {
+    #btn-generate {
       flex: 1;
       justify-content: center;
-      padding: 12px 20px;
+      padding: 12px 24px;
       font-size: 1rem;
-      background: linear-gradient(135deg, #6B21A8, #0A66C2);
-      color: #fff;
-      border: none;
     }
-    #btn-generate-ai:hover:not(:disabled) {
-      background: linear-gradient(135deg, #581C87, #004182);
-    }
-    #btn-generate-ai:disabled { background: var(--border); color: var(--text-secondary); cursor: not-allowed; }
 
     #btn-get-prompt {
       flex-shrink: 0;
-      padding: 12px 16px;
-      font-size: 0.9rem;
+      padding: 12px 14px;
+      font-size: 0.85rem;
       white-space: nowrap;
     }
   </style>
@@ -598,39 +531,11 @@
   <div class="logo">in</div>
   <div>
     <h1>LinkedIn Post Prompt Generator</h1>
-    <p>Generate AI prompts to craft compelling LinkedIn posts from your profile</p>
+    <p>Generate polished posts, cover letters &amp; captions from your profile</p>
   </div>
 </header>
 
 <div class="main">
-
-  <!-- API Settings -->
-  <section class="card" id="api-section">
-    <div class="card-title">
-      &#9881; API Settings
-      <span id="api-status-badge" class="api-badge api-badge--none">No key</span>
-    </div>
-    <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:14px;">
-      Add your <strong>Anthropic API key</strong> to generate content directly in the app.
-      Stored in your browser only &mdash; never sent anywhere except <code>api.anthropic.com</code>.
-      Get a key at <strong>console.anthropic.com</strong>.
-    </p>
-    <div class="api-row">
-      <div class="form-group">
-        <label for="api-key-input">API Key</label>
-        <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label for="model-select">Model</label>
-        <select id="model-select">
-          <option value="claude-haiku-4-5-20251001">Haiku 4.5 &mdash; Fast &amp; economical</option>
-          <option value="claude-sonnet-4-6" selected>Sonnet 4.6 &mdash; Balanced quality</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" id="btn-save-key" style="white-space:nowrap;">Save Key</button>
-      <button class="btn btn-ghost" id="btn-clear-key" style="display:none;white-space:nowrap;">Clear</button>
-    </div>
-  </section>
 
   <!-- STEP 1: Profile -->
   <section class="card" id="profile-section">
@@ -780,21 +685,17 @@
     <div class="card-title"><span class="step">4</span> Your Content</div>
 
     <div class="output-tabs">
-      <button class="tab-btn active" id="tab-response">&#10024; AI Response</button>
-      <button class="tab-btn" id="tab-prompt">&#128203; Prompt</button>
+      <button class="tab-btn active" id="tab-response">&#9997; Generated Content</button>
+      <button class="tab-btn" id="tab-prompt">&#128203; AI Prompt</button>
     </div>
 
     <!-- Response panel -->
     <div id="output-response-panel">
-      <div id="streaming-status">
-        <span class="spinner"></span>
-        <span>Generating with Claude&hellip;</span>
-      </div>
       <textarea id="output-response" placeholder="Your generated content will appear here&hellip;" style="min-height:220px;"></textarea>
       <div class="output-actions">
         <button class="btn btn-primary" id="btn-copy-response">&#128203; Copy</button>
         <span id="copy-response-feedback" style="display:none;color:var(--green);font-size:0.85rem;font-weight:600;">&#10003; Copied!</span>
-        <button class="btn btn-ghost" id="btn-regenerate-ai">Regenerate</button>
+        <button class="btn btn-ghost" id="btn-regenerate-response">Regenerate</button>
       </div>
     </div>
 
@@ -817,11 +718,10 @@
 <!-- Sticky generate bar -->
 <div id="generate-bar">
   <div class="inner">
+    <button class="btn btn-primary" id="btn-generate">&#9889; Generate</button>
     <button class="btn btn-ghost" id="btn-get-prompt">&#128203; Get Prompt</button>
-    <button class="btn" id="btn-generate-ai">&#10024; Generate with Claude</button>
   </div>
   <div id="validation-error"></div>
-  <div id="api-key-notice">No API key saved &mdash; <a href="#api-section">add one above</a> to generate directly.</div>
 </div>
 
 <script>
@@ -1326,7 +1226,6 @@ IMPORTANT: Return only the Instagram caption text (and hashtags if specified). N
     document.getElementById('output-section').style.display = 'none';
     document.getElementById('output-response').value = '';
     document.getElementById('output-prompt').value = '';
-    document.getElementById('streaming-status').style.display = 'none';
     document.getElementById('template-fields').innerHTML = '';
     document.getElementById('hashtag-chips').innerHTML = '';
     document.getElementById('hashtag-chip-area').style.display = 'none';
@@ -1484,34 +1383,150 @@ IMPORTANT: Return only the Instagram caption text (and hashtags if specified). N
     }
   }
 
-  // ─── API key management ───────────────────────────────────────────────────────
+  // ─── Response builders (template-generated content) ──────────────────────────
 
-  function loadApiKey() {
-    const key = localStorage.getItem('anthropic_api_key');
-    if (!key) return;
-    document.getElementById('api-key-input').value = key;
-    document.getElementById('api-status-badge').textContent = 'Key saved';
-    document.getElementById('api-status-badge').className = 'api-badge api-badge--set';
-    document.getElementById('btn-clear-key').style.display = 'inline-flex';
-  }
+  const TONE_HOOKS = {
+    'new-job': {
+      professional:   (p, f) => `After ${p.yearsExperience}+ years in ${p.currentRole.domain}, I'm moving into my next chapter.`,
+      conversational: (p, f) => `Big news — I'm making a move.`,
+      storytelling:   (p, f) => `${p.yearsExperience} years. Countless projects. And now, a new chapter.`,
+      inspirational:  (p, f) => `Growth means knowing when to step into new challenges. That moment, for me, is now.`,
+      enthusiastic:   (p, f) => `New role. New energy. Here we go.`
+    },
+    'achievement': {
+      professional:   (p, f) => f['impact-metric'] ? `${f['impact-metric']}.` : `A milestone worth sharing.`,
+      conversational: (p, f) => f['impact-metric'] ? `${f['impact-metric']}. Here's how.` : `We solved a real problem. Here's the story.`,
+      storytelling:   (p, f) => `It started with a problem that had been slowing us down for months.`,
+      inspirational:  (p, f) => `The best wins come from solving the right problems, not just building more features.`,
+      enthusiastic:   (p, f) => f['impact-metric'] ? `${f['impact-metric']} — and here's the story behind it.` : `Big win to share.`
+    },
+    'award': {
+      professional:   (p, f) => `I'm honoured to have received the ${f['award-name'] === '__other__' ? f['award-issuer'] : f['award-name']} from ${f['award-issuer']}${f['award-date'] ? ` (${f['award-date']})` : ''}.`,
+      conversational: (p, f) => `Something worth sharing — I received the ${f['award-name'] === '__other__' ? f['award-issuer'] : f['award-name']}${f['award-date'] ? ` this ${f['award-date']}` : ''}.`,
+      storytelling:   (p, f) => `${f['award-date'] || 'Recently'}, something unexpected arrived.`,
+      inspirational:  (p, f) => `Recognition isn't the goal. But when it comes, it's a reminder that the work matters.`,
+      enthusiastic:   (p, f) => `The ${f['award-name'] === '__other__' ? f['award-issuer'] : f['award-name']} — I'm still processing this one.`
+    },
+    'learning': {
+      professional:   (p, f) => `I'm pleased to share that I've recently completed ${f['cert-name'] === '__other__' ? (f['cert-issuer'] || 'a certification') : f['cert-name']}${f['cert-issuer'] ? ` from ${f['cert-issuer']}` : ''}.`,
+      conversational: (p, f) => `Just passed ${f['cert-name'] === '__other__' ? (f['cert-issuer'] || 'my latest cert') : f['cert-name']}${f['completion-date'] ? ` — ${f['completion-date']}` : ''}.`,
+      storytelling:   (p, f) => `There's a moment when you realise a knowledge gap is holding you back. That's what led me here.`,
+      inspirational:  (p, f) => `Learning never stops — and this is my latest proof of that.`,
+      enthusiastic:   (p, f) => `${f['cert-name'] === '__other__' ? (f['cert-issuer'] || 'New cert') : f['cert-name']} — done!`
+    }
+  };
 
-  function saveApiKey() {
-    const key = document.getElementById('api-key-input').value.trim();
-    if (!key) return;
-    localStorage.setItem('anthropic_api_key', key);
-    document.getElementById('api-status-badge').textContent = 'Key saved';
-    document.getElementById('api-status-badge').className = 'api-badge api-badge--set';
-    document.getElementById('btn-clear-key').style.display = 'inline-flex';
-    document.getElementById('api-key-notice').style.display = 'none';
-  }
+  const RESPONSE_BUILDERS = {
 
-  function clearApiKey() {
-    localStorage.removeItem('anthropic_api_key');
-    document.getElementById('api-key-input').value = '';
-    document.getElementById('api-status-badge').textContent = 'No key';
-    document.getElementById('api-status-badge').className = 'api-badge api-badge--none';
-    document.getElementById('btn-clear-key').style.display = 'none';
-  }
+    'new-job': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const hook = (TONE_HOOKS['new-job'][tone] || TONE_HOOKS['new-job'].conversational)(p, f);
+      const lines = [
+        hook, '',
+        `I'm joining ${f['new-company']} as ${f['new-role']}${f['start-date'] ? ` — starting ${f['start-date']}` : ''}.`,
+        '', f['key-excitement']
+      ];
+      if (f['shoutouts']) lines.push('', `A huge thank you to ${f['shoutouts']} — your support along the way has meant more than I can say.`);
+      if (cta) lines.push('', ctaText || `If you're working in ${p.currentRole.domain} or navigating a similar move, I'd love to connect.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'achievement': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const hook = (TONE_HOOKS['achievement'][tone] || TONE_HOOKS['achievement'].conversational)(p, f);
+      const lines = [hook, '', f['problem-solved'], '', f['achievement-title']];
+      if (f['tech-used']) lines.push('', `Built with: ${f['tech-used']}`);
+      if (f['lessons-learned']) lines.push('', `Key takeaway: ${f['lessons-learned']}`);
+      if (cta) lines.push('', ctaText || `Have you tackled something similar? What was your approach?`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'award': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const hook = (TONE_HOOKS['award'][tone] || TONE_HOOKS['award'].conversational)(p, f);
+      const lines = [hook, '', f['why-meaningful']];
+      if (f['team-credit']) lines.push('', `None of this would have been possible without ${f['team-credit']}. Thank you.`);
+      if (cta) lines.push('', ctaText || `To everyone building and delivering in ${p.currentRole.domain} — keep going. The work matters.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'insight': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const lines = [f['insight-topic']];
+      if (f['tech-context']) lines.push('', f['tech-context']);
+      if (f['real-example']) lines.push('', f['real-example']);
+      if (f['contrarian-angle']) lines.push('', `The common mistake: ${f['contrarian-angle']}`);
+      lines.push('', `${p.yearsExperience}+ years in ${p.currentRole.domain} has taught me this the hard way.`);
+      if (cta) lines.push('', ctaText || `What's your take? I'd love to hear where you agree — or where you push back.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'learning': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const certName = f['cert-name'] === '__other__' ? (f['cert-issuer'] || 'a new certification') : f['cert-name'];
+      const hook = (TONE_HOOKS['learning'][tone] || TONE_HOOKS['learning'].conversational)(p, f);
+      const lines = [hook, '', f['why-pursued'], '', f['key-learning']];
+      if (cta) lines.push('', ctaText || `If you're considering ${certName}, happy to share more about what to expect.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'ai-news': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const lines = [
+        `${f['news-headline']}${f['news-source'] ? ` — via ${f['news-source']}` : ''}`,
+        '', f['personal-take'],
+        '', f['field-impact']
+      ];
+      if (f['ai-tools-note']) lines.push('', f['ai-tools-note']);
+      if (cta) lines.push('', ctaText || `How are you seeing this play out in your work? Drop your thoughts below.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'general': ({ profile: p, fields: f, tone, hashtags, cta, ctaText }) => {
+      const moodOpeners = { positive: `Something worth sharing.`, reflective: `Been thinking about this a lot lately.`, motivated: `Onwards.`, curious: `A question I've been sitting with.` };
+      const lines = [moodOpeners[f['mood']] || f['update-topic'], '', f['update-topic'], '', f['update-detail']];
+      if (f['relevance']) lines.push('', f['relevance']);
+      if (cta) lines.push('', ctaText || `What's your take on this?`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    },
+
+    'cover-letter': ({ profile: p, fields: f, tone }) => {
+      const topSkills = getSkillsList(p, 5).join(', ');
+      const prevRoles = (p.experience || []).slice(0, 2).map(e => `${e.title} at ${e.company}`).join(', then ');
+      const lines = [`Dear Hiring Team,`, ''];
+      if (f['highlight-achievement']) {
+        lines.push(f['highlight-achievement'], '', `This is the kind of impact I want to bring to ${f['company-name']} as your ${f['job-title']}.`);
+      } else {
+        lines.push(`I'm applying for the ${f['job-title']} role at ${f['company-name']}${f['job-source'] ? `, which I found via ${f['job-source']}` : ''}.`);
+      }
+      lines.push(
+        '',
+        `With ${p.yearsExperience}+ years in ${p.currentRole.domain}, I currently work as ${p.currentRole.title} at ${p.currentRole.company}${p.currentRole.client ? ` (client: ${p.currentRole.client})` : ''}${prevRoles ? `. Previously: ${prevRoles}` : ''}.`,
+        '',
+        `Your requirements:`,
+        f['jd-requirements'],
+        '',
+        `My background in ${topSkills} maps directly to these, and I'm confident I can contribute from day one.`,
+        '',
+        f['why-company'],
+        '',
+        `I'd welcome the opportunity to discuss this further. Please find my CV attached.`,
+        '',
+        `Best regards,`,
+        p.name
+      );
+      return lines.join('\n');
+    },
+
+    'instagram': ({ profile: p, fields: f, tone, hashtags, cta, ctaText, includeEmoji }) => {
+      const lines = [f['post-theme'] + (includeEmoji ? ' ✨' : ''), '', f['key-message']];
+      if (f['personal-story']) lines.push('', f['personal-story']);
+      if (cta) lines.push('', ctaText || (includeEmoji ? '💬 ' : '') + `What do you think? Drop a comment below.`);
+      if (hashtags.length) lines.push('', hashtags.join(' '));
+      return lines.join('\n');
+    }
+  };
 
   // ─── Prompt generation ────────────────────────────────────────────────────────
 
@@ -1582,92 +1597,15 @@ IMPORTANT: Return only the Instagram caption text (and hashtags if specified). N
     showOutputSection('prompt');
   }
 
-  async function generateWithAI() {
-    const apiKey = document.getElementById('api-key-input').value.trim()
-                || localStorage.getItem('anthropic_api_key');
-
-    if (!apiKey) {
-      document.getElementById('api-key-notice').style.display = 'block';
-      document.getElementById('api-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-    document.getElementById('api-key-notice').style.display = 'none';
-
+  function generateResponse() {
     const ctx = validateAndBuildCtx();
     if (!ctx) return;
+    const builder = RESPONSE_BUILDERS[state.activeTemplate];
+    if (!builder) return;
+    document.getElementById('output-response').value = builder(ctx);
     const prompt = buildPrompt(ctx);
-    if (!prompt) return;
-
-    // Store prompt for "Prompt" tab
-    document.getElementById('output-prompt').value = prompt;
-
-    // Show output in response mode
-    document.getElementById('output-response').value = '';
-    document.getElementById('output-response').disabled = true;
-    document.getElementById('streaming-status').style.display = 'flex';
+    if (prompt) document.getElementById('output-prompt').value = prompt;
     showOutputSection('response');
-
-    const model = document.getElementById('model-select').value;
-    const maxTokens = Math.min(Math.ceil(ctx.words * 1.8) + 300, 2048);
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model,
-          max_tokens: maxTokens,
-          stream: true,
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-
-      if (!res.ok) {
-        let msg = `API error ${res.status}`;
-        try { const e = await res.json(); msg = e.error?.message || msg; } catch {}
-        throw new Error(msg);
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let text = '';
-      let buffer = '';
-
-      document.getElementById('streaming-status').style.display = 'none';
-      document.getElementById('output-response').disabled = false;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6).trim();
-          if (!raw) continue;
-          try {
-            const json = JSON.parse(raw);
-            if (json.type === 'content_block_delta' && json.delta?.type === 'text_delta') {
-              text += json.delta.text;
-              const ta = document.getElementById('output-response');
-              ta.value = text;
-              ta.scrollTop = ta.scrollHeight;
-            }
-          } catch {}
-        }
-      }
-    } catch (err) {
-      document.getElementById('streaming-status').style.display = 'none';
-      document.getElementById('output-response').disabled = false;
-      document.getElementById('output-response').value =
-        `⚠ ${err.message}\n\nPlease check your API key and try again.`;
-    }
   }
 
   // ─── Clipboard ────────────────────────────────────────────────────────────────
@@ -1764,18 +1702,12 @@ IMPORTANT: Return only the Instagram caption text (and hashtags if specified). N
       }
     });
 
-    // API key
-    loadApiKey();
-    document.getElementById('btn-save-key').addEventListener('click', saveApiKey);
-    document.getElementById('btn-clear-key').addEventListener('click', clearApiKey);
-    document.getElementById('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
-
     // Generate bar buttons
+    document.getElementById('btn-generate').addEventListener('click', generateResponse);
     document.getElementById('btn-get-prompt').addEventListener('click', generatePromptOnly);
-    document.getElementById('btn-generate-ai').addEventListener('click', generateWithAI);
 
     // Regenerate buttons
-    document.getElementById('btn-regenerate-ai').addEventListener('click', generateWithAI);
+    document.getElementById('btn-regenerate-response').addEventListener('click', generateResponse);
     document.getElementById('btn-regenerate-prompt').addEventListener('click', generatePromptOnly);
 
     // Output tabs
