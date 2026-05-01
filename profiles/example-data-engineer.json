@@ -1,0 +1,94 @@
+{
+  "name": "Priya Sharma",
+  "title": "Senior Data Engineer",
+  "location": "London, UK",
+  "email": "priya.sharma@example.com",
+  "phone": null,
+  "linkedin": "linkedin.com/in/priya-sharma-data",
+  "summary": "Senior Data Engineer with 8 years of experience building large-scale data pipelines and analytics platforms across e-commerce and fintech. Specialised in Apache Spark, dbt, and cloud-native data stacks on AWS and Databricks. Passionate about DataOps, data quality, and helping analytics teams trust their data.",
+  "yearsExperience": 8,
+  "domain": "Data & Analytics",
+  "primarySkillCategories": ["dataEngineering", "languages", "cloud", "aiTools", "methodologies"],
+  "currentRole": {
+    "title": "Senior Data Engineer",
+    "company": "Ocado Technology",
+    "client": null,
+    "domain": "E-commerce / Retail Tech",
+    "startDate": "Mar 2023",
+    "endDate": null,
+    "location": "London, UK",
+    "highlights": [
+      "Rebuilt the customer analytics pipeline using dbt + Databricks, reducing model run time by 65% and eliminating 3 legacy Spark jobs",
+      "Designed a streaming ingestion layer with Kafka and Flink for real-time inventory data, cutting data freshness latency from 4 hours to under 5 minutes",
+      "Implemented data quality checks with Great Expectations across 40+ data models, reducing downstream BI errors by 80%"
+    ],
+    "technologies": ["Apache Spark", "dbt", "Databricks", "Kafka", "Flink", "AWS S3", "AWS Glue", "Python", "SQL", "Airflow"]
+  },
+  "experience": [
+    {
+      "title": "Data Engineer",
+      "company": "Monzo Bank",
+      "client": null,
+      "startDate": "Jan 2021",
+      "endDate": "Feb 2023",
+      "location": "London, UK",
+      "domain": "Fintech / Banking",
+      "highlights": [
+        "Migrated 50+ ETL jobs from on-premise Pentaho to AWS Glue, reducing operational cost by 40% and improving reliability",
+        "Built a self-serve analytics platform on Redshift + Looker, enabling product teams to run queries without data team involvement"
+      ],
+      "technologies": ["AWS Glue", "Redshift", "Looker", "Python", "dbt", "Airflow", "Terraform"]
+    },
+    {
+      "title": "Data Engineer",
+      "company": "Tata Consultancy Services",
+      "client": "UK Retailer",
+      "startDate": "Jun 2017",
+      "endDate": "Dec 2020",
+      "location": "Bangalore, India",
+      "domain": "Retail Analytics",
+      "highlights": [
+        "Developed PySpark batch pipelines processing 500M+ events daily for customer segmentation and product recommendation models",
+        "Introduced CI-CD for data pipelines using GitHub Actions, cutting deployment time from days to under an hour"
+      ],
+      "technologies": ["PySpark", "Hadoop", "Hive", "HBase", "Python", "GitHub Actions"]
+    }
+  ],
+  "skills": {
+    "dataEngineering": ["Apache Spark", "dbt", "Apache Kafka", "Apache Flink", "Airflow", "Great Expectations", "ETL/ELT", "Data Modelling", "Streaming Pipelines"],
+    "languages": ["Python", "SQL", "Scala", "Bash"],
+    "cloud": ["AWS (Glue, S3, Redshift, EMR)", "Databricks", "Snowflake", "GCP BigQuery"],
+    "devops": ["Terraform", "Docker", "GitHub Actions", "ArgoCD"],
+    "databases": ["PostgreSQL", "DynamoDB", "MongoDB", "Redis"],
+    "aiTools": ["GitHub Copilot", "Claude (Anthropic)", "ChatGPT"],
+    "methodologies": ["DataOps", "Agile", "Data Mesh", "Domain-Driven Data Design"]
+  },
+  "certifications": [
+    {
+      "title": "AWS Certified Data Engineer – Associate",
+      "issuer": "Amazon Web Services",
+      "shortName": "AWS DEA"
+    },
+    {
+      "title": "Databricks Certified Associate Developer for Apache Spark",
+      "issuer": "Databricks",
+      "shortName": "Databricks Spark"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Data Team of the Year",
+      "issuer": "Ocado Technology",
+      "date": "Dec 2024"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "field": "Computer Science & Engineering",
+      "institution": "National Institute of Technology",
+      "location": "Warangal, India",
+      "period": "2013 - 2017"
+    }
+  ]
+}

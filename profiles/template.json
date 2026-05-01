@@ -1,0 +1,80 @@
+{
+  "_note": "Copy this file, rename it (e.g. profiles/yourname.json), and fill in your details. Fields with null values are optional — remove or keep. Skill category names are completely up to you.",
+
+  "name": "Your Full Name",
+  "title": "Your Professional Title",
+  "location": "City, Country",
+  "email": "you@example.com",
+  "phone": null,
+  "linkedin": null,
+  "summary": "Write a 2-3 sentence professional summary. Cover your area of expertise, the domains you've worked in, and what you're known for delivering.",
+  "yearsExperience": 5,
+  "domain": "Your Industry (e.g. Fintech, Healthcare, E-commerce, SaaS, Data & AI, DevOps)",
+
+  "primarySkillCategories": ["category1", "category2", "category3"],
+
+  "currentRole": {
+    "title": "Current Job Title",
+    "company": "Your Employer Name",
+    "client": null,
+    "domain": "Domain or Industry for this role",
+    "startDate": "Month Year",
+    "endDate": null,
+    "location": "City, Country",
+    "highlights": [
+      "Key achievement or responsibility 1",
+      "Key achievement or responsibility 2",
+      "Key achievement or responsibility 3"
+    ],
+    "technologies": ["Tech1", "Tech2", "Tech3"]
+  },
+
+  "experience": [
+    {
+      "title": "Previous Job Title",
+      "company": "Previous Employer",
+      "client": null,
+      "startDate": "Month Year",
+      "endDate": "Month Year",
+      "location": "City, Country",
+      "domain": "Domain",
+      "highlights": [
+        "Achievement or responsibility 1"
+      ],
+      "technologies": ["Tech1", "Tech2"]
+    }
+  ],
+
+  "skills": {
+    "category1": ["Skill A", "Skill B", "Skill C"],
+    "category2": ["Skill D", "Skill E", "Skill F"],
+    "category3": ["Skill G", "Skill H"],
+    "aiTools": ["GitHub Copilot", "ChatGPT", "Claude"]
+  },
+
+  "certifications": [
+    {
+      "title": "Certification Name",
+      "issuer": "Issuing Organisation",
+      "shortName": "ABBREV"
+    }
+  ],
+
+  "awards": [
+    {
+      "title": "Award Name",
+      "issuer": "Awarding Organisation",
+      "date": "Month Year"
+    }
+  ],
+
+  "education": [
+    {
+      "degree": "Degree Type",
+      "field": "Field of Study",
+      "institution": "University or College",
+      "location": "City, Country",
+      "period": "Year - Year"
+    }
+  ]
+}

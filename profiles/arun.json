@@ -1,0 +1,203 @@
+{
+  "name": "Arun Madathil Rajan",
+  "title": "Senior Java Engineer",
+  "location": "Birmingham, UK",
+  "email": "arunr307@gmail.com",
+  "phone": "+44-7920-688896",
+  "linkedin": "linkedin.com/in/arun-m-r-nair",
+  "summary": "Senior Java Developer and Tech Lead with 13+ years of enterprise experience across Banking, Financial Services, and Application Security. Specialist in Java, Spring Boot, Microservices, and RESTful APIs, with deep expertise in IAM, OAuth 2.0, Keycloak, and Auth0. Proven track record in GCP cloud migration and ETL pipelines. Currently engineering enterprise loan systems for Goldman Sachs (via Apexon). Consistent award winner recognised for performance and delivery excellence.",
+  "yearsExperience": 13,
+  "domain": "Banking / Fintech",
+  "primarySkillCategories": ["backend", "security", "cloud", "devops", "aiTools", "methodologies"],
+  "currentRole": {
+    "title": "Senior Software Engineer",
+    "company": "Apexon",
+    "client": "Goldman Sachs",
+    "domain": "Banking / Fintech",
+    "startDate": "Dec 2024",
+    "endDate": null,
+    "location": "Birmingham, UK",
+    "highlights": [
+      "Engineered Spring Batch Quartz scheduler improving loan due date detection precision by 30% across Goldman Sachs' enterprise loans platform",
+      "Delivered ongoing support for the covenant tracking system, enhancing performance, stability, and operational resilience at enterprise scale",
+      "Leveraged AI-assisted development tools (GitHub Copilot, Claude, Devin), accelerating delivery velocity and reducing code review cycles"
+    ],
+    "technologies": [
+      "Java 21", "Spring Boot", "Spring Data JPA", "Quartz", "OpenAPI",
+      "Kubernetes", "MongoDB", "GitLab CI-CD", "GitHub Copilot", "Claude", "Devin"
+    ]
+  },
+  "experience": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "The Hut Group (THG)",
+      "client": null,
+      "startDate": "Sep 2022",
+      "endDate": "Nov 2024",
+      "location": "Manchester, UK",
+      "domain": "Application Security & Identity Management",
+      "highlights": [
+        "Implemented Quarkus APIs and a Next.js UI to manage Keycloak instances, migrated user credentials to Auth0 via Spring Batch, reducing manual intervention by 75%",
+        "Administered Keycloak security services across multiple applications, cutting production incidents by 60%",
+        "Built Terraform-managed infrastructure with GitOps CI-CD (GitHub Actions, ArgoCD), improving release reliability and frequency"
+      ],
+      "technologies": [
+        "Java 17", "Quarkus", "Next.js", "Keycloak", "Auth0",
+        "Kubernetes", "Docker", "Terraform", "GitHub Actions", "ActiveMQ",
+        "Helm", "Karate", "Cypress", "Cucumber"
+      ]
+    },
+    {
+      "title": "System Analyst",
+      "company": "UST Global",
+      "client": "Equifax",
+      "startDate": "Nov 2021",
+      "endDate": "Aug 2022",
+      "location": "Leeds, UK",
+      "domain": "Banking / Fintech",
+      "highlights": [
+        "Migrated Scala legacy apps from on-premises to GCP Dataproc, reducing processing time by 40% and enabling horizontal scalability",
+        "Constructed Pub/Sub-triggered, on-demand processing for large encrypted files in GCS, improving efficiency by 50% and reducing latency by 30%",
+        "Achieved 100% PII data security via file-level and column-level encryption across all cloud data assets"
+      ],
+      "technologies": [
+        "GCP", "Dataproc", "Composer", "Airflow", "Dataflow",
+        "Apache Beam", "Cloud Storage", "Bigtable", "Java 11", "Scala"
+      ]
+    },
+    {
+      "title": "System Analyst",
+      "company": "UST Global",
+      "client": "Equifax",
+      "startDate": "Feb 2018",
+      "endDate": "Nov 2021",
+      "location": "Kochi, India",
+      "domain": "Banking / Fintech",
+      "highlights": [
+        "Architected RESTful APIs using Spring Boot microservices, improving scalability and reducing inter-service coupling across a distributed financial platform",
+        "Built a reusable OAuth 2.0 security library (Spring Security + SecureAuth), standardising authentication across multiple internal systems",
+        "Transitioned 50+ on-premise Pentaho ETL jobs to GCP BigQuery via Dataflow, cutting processing time by 60% and operational costs by 40%"
+      ],
+      "technologies": [
+        "GCP", "Dataflow", "BigQuery", "Bigtable", "Composer",
+        "Java", "Python", "Spring Cloud", "OAuth 2.0", "Oracle", "Liquibase", "JUnit"
+      ]
+    },
+    {
+      "title": "Associate Projects",
+      "company": "Cognizant",
+      "client": "Dun & Bradstreet (D&B)",
+      "startDate": "Apr 2016",
+      "endDate": "Feb 2018",
+      "location": "Kochi, India",
+      "domain": "Banking / Fintech",
+      "highlights": [
+        "Contributed to design and estimation of the D&B Credit Score Calculation System, improving development efficiency by 30% through structured requirements decomposition"
+      ],
+      "technologies": ["Java 8", "Spring MVC", "Hibernate", "Apache Maven", "MS SQL Server", "JavaScript"]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Citrus Informatics",
+      "client": null,
+      "startDate": "Jul 2014",
+      "endDate": "Apr 2016",
+      "location": "Kochi, India",
+      "domain": "Search & Content Management",
+      "highlights": [
+        "Configured Couchbase and WSO2 API Manager for high-availability environments",
+        "Optimised Elasticsearch queries, improving system performance by 40% and reducing query response time by 25%",
+        "Tuned Kafka and Apache Spark pipelines for high-throughput real-time data analysis"
+      ],
+      "technologies": ["Java", "RESTful APIs", "Spark", "Kafka", "Couchbase", "Elasticsearch", "Alfresco"]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Focuz Innovation",
+      "client": null,
+      "startDate": "Apr 2013",
+      "endDate": "Jun 2014",
+      "location": "Kochi, India",
+      "domain": "HR Technology",
+      "highlights": [
+        "Developed HRMS application with BIS salary management module, improving payroll efficiency by 30% and achieving 95% SLA incident resolution rate"
+      ],
+      "technologies": ["Java 1.7", "Struts 2.0", "PostgreSQL", "Hibernate"]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Inet Info Tech",
+      "client": null,
+      "startDate": "May 2012",
+      "endDate": "Apr 2013",
+      "location": "Kochi, India",
+      "domain": "Web & Desktop Applications",
+      "highlights": [
+        "Designed web and desktop applications with 95% unit test coverage"
+      ],
+      "technologies": ["Java", "J2EE", "JPA", "MySQL"]
+    }
+  ],
+  "skills": {
+    "backend": [
+      "Java (8-21)", "J2EE", "Spring Boot", "Spring MVC", "Spring Data JPA",
+      "Spring Security", "Spring Cloud", "Quarkus", "Microservices",
+      "RESTful APIs", "OAuth 2.0", "OpenID Connect", "Hibernate",
+      "TDD", "BDD", "JUnit", "Mockito"
+    ],
+    "security": [
+      "Keycloak", "Auth0", "SecureAuth", "IAM", "OAuth 2.0", "OpenID Connect"
+    ],
+    "cloud": [
+      "GCP", "Cloud Storage", "Pub/Sub", "BigQuery", "Bigtable",
+      "Dataflow", "Dataproc", "Composer", "Airflow", "Apache Beam",
+      "ETL", "Data Migration"
+    ],
+    "devops": [
+      "Docker", "Kubernetes", "Helm", "Terraform",
+      "GitHub Actions", "GitLab CI-CD", "ArgoCD"
+    ],
+    "databases": ["PostgreSQL", "MySQL", "MS SQL Server", "Oracle", "MongoDB", "Couchbase"],
+    "messaging": ["Apache Kafka", "ActiveMQ"],
+    "aiTools": ["GitHub Copilot", "Claude (Anthropic)", "Devin"],
+    "methodologies": ["Agile", "Scrum", "Microservices Architecture", "Domain-Driven Design"]
+  },
+  "certifications": [
+    {
+      "title": "Associate Cloud Engineer",
+      "issuer": "Google Cloud Platform",
+      "shortName": "GCP ACE"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Excellence in Performance and Values",
+      "issuer": "Apexon",
+      "date": "Sep 2025"
+    },
+    {
+      "title": "Outstanding Performance Award",
+      "issuer": "Equifax / UST Global",
+      "date": "Apr 2022"
+    },
+    {
+      "title": "U Star Award",
+      "issuer": "UST Global",
+      "date": "Feb 2020"
+    },
+    {
+      "title": "U Star Award Shining Star",
+      "issuer": "UST Global",
+      "date": "Mar 2019"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Engineering",
+      "field": "Computer Science & Engineering",
+      "institution": "Vinayaka Mission Engineering College",
+      "location": "Salem, India",
+      "period": "Jun 2008 - Apr 2012"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Arjun Menon",
+  "title": "Software Engineering Graduate",
+  "location": "Bangalore, India",
+  "email": "arjun.menon@example.com",
+  "phone": null,
+  "linkedin": "linkedin.com/in/arjun-menon-dev",
+  "summary": "Computer Science graduate from VIT University with a strong foundation in Java, Python, and web development. Built full-stack projects during my degree and completed a 3-month internship at a product startup. Passionate about backend development and cloud — actively building in public and looking for my first full-time software engineering role.",
+  "yearsExperience": 0,
+  "domain": "Software Engineering",
+  "primarySkillCategories": ["languages", "frameworks", "tools", "aiTools"],
+  "currentRole": {
+    "title": "Software Engineering Intern",
+    "company": "Zoho Corporation",
+    "client": null,
+    "domain": "SaaS / Product Engineering",
+    "startDate": "Jan 2025",
+    "endDate": "Mar 2025",
+    "location": "Chennai, India",
+    "highlights": [
+      "Built a REST API module in Java Spring Boot for the Zoho Desk ticketing system, handling 10K+ requests/day in the test environment",
+      "Wrote unit tests using JUnit and Mockito, achieving 85% code coverage for the module",
+      "Collaborated in a 6-person agile squad, participating in daily standups, sprint reviews, and code reviews"
+    ],
+    "technologies": ["Java", "Spring Boot", "MySQL", "JUnit", "Mockito", "Git", "Postman", "Jira"]
+  },
+  "experience": [
+    {
+      "title": "Freelance Web Developer",
+      "company": "Self-employed",
+      "client": "Local Businesses",
+      "startDate": "Jun 2023",
+      "endDate": "Dec 2024",
+      "location": "Bangalore, India",
+      "domain": "Web Development",
+      "highlights": [
+        "Built 3 small business websites using React and Tailwind, delivered on fixed-price contracts",
+        "Integrated payment gateway (Razorpay) for a local tutoring platform, improving checkout completion by reducing friction"
+      ],
+      "technologies": ["React", "JavaScript", "TailwindCSS", "Node.js", "Razorpay API"]
+    }
+  ],
+  "projects": [
+    {
+      "name": "StudyBuddy — AI Study Planner",
+      "description": "Final year project: a web app that generates personalised study plans using OpenAI API based on syllabus input and exam dates. Built with React frontend and Flask backend, deployed on Render.",
+      "technologies": ["Python", "Flask", "React", "OpenAI API", "PostgreSQL", "Render"],
+      "link": "github.com/arjunmenon/studybuddy"
+    },
+    {
+      "name": "Campus Lost & Found Portal",
+      "description": "Full-stack web portal for VIT students to report and claim lost items. Includes image upload, real-time notifications, and admin dashboard.",
+      "technologies": ["Java", "Spring MVC", "MySQL", "HTML/CSS", "JavaScript"],
+      "link": "github.com/arjunmenon/campus-lnf"
+    }
+  ],
+  "skills": {
+    "languages": ["Java", "Python", "JavaScript", "SQL", "HTML", "CSS"],
+    "frameworks": ["Spring Boot", "Flask", "React", "TailwindCSS", "Node.js"],
+    "tools": ["Git", "GitHub", "Postman", "MySQL", "PostgreSQL", "Docker (basics)", "Linux CLI", "VS Code", "Jira"],
+    "aiTools": ["GitHub Copilot", "ChatGPT", "Claude (Anthropic)"],
+    "concepts": ["REST APIs", "OOP", "Data Structures & Algorithms", "Agile basics", "Unit Testing"]
+  },
+  "certifications": [
+    {
+      "title": "AWS Cloud Practitioner",
+      "issuer": "Amazon Web Services",
+      "shortName": "CLF-C02"
+    },
+    {
+      "title": "Java Programming Masterclass",
+      "issuer": "Udemy / Tim Buchalka",
+      "shortName": "Java Udemy"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Final Year Project — Computer Science Department",
+      "issuer": "VIT University",
+      "date": "Apr 2025"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "field": "Computer Science & Engineering",
+      "institution": "VIT University",
+      "location": "Vellore, India",
+      "period": "2021 - 2025"
+    }
+  ]
+}

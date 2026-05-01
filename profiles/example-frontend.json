@@ -1,0 +1,89 @@
+{
+  "name": "Sofia Reyes",
+  "title": "Senior Frontend Engineer",
+  "location": "Barcelona, Spain",
+  "email": "sofia.reyes@example.com",
+  "phone": null,
+  "linkedin": "linkedin.com/in/sofia-reyes-frontend",
+  "summary": "Senior Frontend Engineer with 7 years of experience building high-performance, accessible web applications for SaaS and consumer products. Expert in React, TypeScript, and design systems. Known for bridging the gap between design and engineering — shipping pixel-perfect UIs that are also testable, maintainable, and fast.",
+  "yearsExperience": 7,
+  "domain": "SaaS / Product Engineering",
+  "primarySkillCategories": ["frameworks", "languages", "testing", "devops", "aiTools"],
+  "currentRole": {
+    "title": "Senior Frontend Engineer",
+    "company": "Factorial HR",
+    "client": null,
+    "domain": "HR Tech / SaaS",
+    "startDate": "Sep 2022",
+    "endDate": null,
+    "location": "Barcelona, Spain (Hybrid)",
+    "highlights": [
+      "Led the migration of a legacy Angular codebase to React + TypeScript, reducing bundle size by 45% and cutting page load time from 4.2s to 1.8s",
+      "Designed and built the company's internal design system from scratch (Storybook + Tailwind), adopted by 6 product squads",
+      "Implemented end-to-end testing with Playwright across 80+ critical user flows, reducing production regressions by 70%"
+    ],
+    "technologies": ["React", "TypeScript", "Next.js", "TailwindCSS", "Storybook", "Playwright", "Vite", "GraphQL", "GitHub Actions"]
+  },
+  "experience": [
+    {
+      "title": "Frontend Engineer",
+      "company": "Typeform",
+      "client": null,
+      "startDate": "Jul 2020",
+      "endDate": "Aug 2022",
+      "location": "Barcelona, Spain",
+      "domain": "SaaS / No-Code Tools",
+      "highlights": [
+        "Built the new form builder UI in React with drag-and-drop support, contributing to a 30% increase in user activation rate",
+        "Introduced visual regression testing with Percy, catching UI drift before it reached production"
+      ],
+      "technologies": ["React", "JavaScript", "Redux", "Styled Components", "Jest", "Percy", "Cypress"]
+    },
+    {
+      "title": "Frontend Developer",
+      "company": "Indra Sistemas",
+      "client": "Public Sector",
+      "startDate": "Jun 2018",
+      "endDate": "Jun 2020",
+      "location": "Madrid, Spain",
+      "domain": "Government / Digital Services",
+      "highlights": [
+        "Built accessible (WCAG 2.1 AA) government portal components used by 500K+ citizens",
+        "Championed performance improvements that reduced Time to Interactive by 2.4 seconds across public-facing services"
+      ],
+      "technologies": ["Vue.js", "JavaScript", "SCSS", "Webpack", "Accessibility (WCAG)", "Jest"]
+    }
+  ],
+  "skills": {
+    "frameworks": ["React", "Next.js", "Vue.js", "TailwindCSS", "Storybook", "Radix UI"],
+    "languages": ["TypeScript", "JavaScript", "HTML5", "CSS3", "GraphQL"],
+    "testing": ["Playwright", "Jest", "Cypress", "Testing Library", "Percy (Visual Regression)"],
+    "devops": ["Vite", "Webpack", "GitHub Actions", "Vercel", "Docker"],
+    "accessibility": ["WCAG 2.1 AA", "ARIA", "Screen Reader Testing", "Axe"],
+    "aiTools": ["GitHub Copilot", "Cursor", "v0 by Vercel", "Claude (Anthropic)"],
+    "methodologies": ["Component-Driven Development", "Design Systems", "Agile", "Accessibility-First"]
+  },
+  "certifications": [
+    {
+      "title": "Professional Scrum Master I",
+      "issuer": "Scrum.org",
+      "shortName": "PSM I"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Technical Contribution",
+      "issuer": "Factorial HR",
+      "date": "Mar 2024"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science",
+      "field": "Computer Engineering",
+      "institution": "Universitat Politècnica de Catalunya",
+      "location": "Barcelona, Spain",
+      "period": "2014 - 2018"
+    }
+  ]
+}
