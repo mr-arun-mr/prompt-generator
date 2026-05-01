@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>LinkedIn Post Prompt Generator</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -128,6 +128,8 @@
       border: none;
       transition: background 0.15s, opacity 0.15s;
       text-decoration: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -200,7 +202,7 @@
       border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 10px 12px;
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-family: monospace;
       resize: vertical;
       color: var(--text);
@@ -250,6 +252,8 @@
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s, transform 0.1s;
       user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .template-card:hover { border-color: var(--blue); background: var(--blue-light); }
@@ -289,7 +293,7 @@
       padding: 9px 12px;
       border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
-      font-size: 0.875rem;
+      font-size: 1rem;
       font-family: inherit;
       color: var(--text);
       background: #fff;
@@ -334,6 +338,7 @@
 
     @media (max-width: 520px) {
       .global-config-grid { grid-template-columns: 1fr; }
+      .checkbox-row { padding: 6px 0; min-height: 44px; align-items: center; }
     }
 
     .divider {
@@ -350,6 +355,9 @@
       color: var(--text-secondary);
       margin-bottom: 14px;
     }
+
+    /* Emoji toggle row — hidden by default, shown only for instagram */
+    #emoji-checkbox-row { display: none; margin-bottom: 10px; }
 
     /* Hashtag chips */
     #hashtag-chip-area { display: none; margin-top: 8px; }
@@ -373,6 +381,8 @@
       color: #fff;
       transition: background 0.12s, color 0.12s;
       user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .chip.deselected {
@@ -393,7 +403,7 @@
       background: rgba(255,255,255,0.95);
       backdrop-filter: blur(6px);
       border-top: 1px solid var(--border);
-      padding: 12px 16px;
+      padding: 12px 16px max(12px, env(safe-area-inset-bottom)) 16px;
     }
 
     #generate-bar .inner {
@@ -561,6 +571,16 @@
         <div class="tc-name">General Update</div>
         <div class="tc-desc">Share any professional update</div>
       </div>
+      <div class="template-card" data-template="cover-letter">
+        <div class="tc-icon">&#128231;</div>
+        <div class="tc-name">Cover Letter</div>
+        <div class="tc-desc">Generate a job application cover letter prompt</div>
+      </div>
+      <div class="template-card" data-template="instagram">
+        <div class="tc-icon">&#128247;</div>
+        <div class="tc-name">Instagram Caption</div>
+        <div class="tc-desc">Write a caption for your Instagram post</div>
+      </div>
     </div>
   </section>
 
@@ -590,6 +610,11 @@
       </div>
     </div>
 
+    <div class="checkbox-row" id="emoji-checkbox-row">
+      <input type="checkbox" id="include-emoji" checked>
+      <span>Include emojis in the post</span>
+    </div>
+
     <div class="checkbox-row" id="hashtag-checkbox-row">
       <input type="checkbox" id="include-hashtags" checked>
       <span>Include hashtags <span style="color:var(--text-secondary);font-size:0.8rem">(auto-suggested from your profile)</span></span>
@@ -599,7 +624,7 @@
       <div class="chip-container" id="hashtag-chips"></div>
     </div>
 
-    <div class="checkbox-row" style="margin-top:10px">
+    <div class="checkbox-row" id="cta-checkbox-row" style="margin-top:10px">
       <input type="checkbox" id="include-cta" checked>
       <span>Include a call-to-action</span>
     </div>
@@ -646,10 +671,36 @@
     professional:   'Formal but warm, clear and authoritative, no slang',
     conversational: 'Casual and direct, like talking to a colleague over coffee',
     storytelling:   'Narrative arc with beginning, tension, and resolution — draw the reader through a story',
-    inspirational:  'Motivating and forward-looking, appeal to the reader\'s ambition and growth mindset'
+    inspirational:  'Motivating and forward-looking, appeal to the reader\'s ambition and growth mindset',
+    enthusiastic:   'Upbeat, energetic, and genuine — warm personality that comes through in every sentence'
   };
 
   const LENGTH_WORDS = { short: 150, medium: 250, long: 400 };
+
+  const TEMPLATE_CONFIG = {
+    'cover-letter': {
+      showHashtags: false, showCta: false, showEmoji: false,
+      tones: ['professional', 'conversational', 'enthusiastic'],
+      lengths: { short: 300, medium: 450, long: 600 },
+      lengthLabels: { short: 'Concise (~300 words)', medium: 'Standard (~450 words)', long: 'Detailed (~600 words)' },
+      hashtagLimit: 0, fieldsLabel: 'Cover Letter Details'
+    },
+    'instagram': {
+      showHashtags: true, showCta: true, showEmoji: true,
+      tones: ['conversational', 'inspirational', 'storytelling'],
+      lengths: { short: 80, medium: 150, long: 250 },
+      lengthLabels: { short: 'Short (~80 words)', medium: 'Caption (~150 words)', long: 'Long-form (~250 words)' },
+      hashtagLimit: 28, fieldsLabel: 'Post Details'
+    }
+  };
+
+  const DEFAULT_TEMPLATE_CONFIG = {
+    showHashtags: true, showCta: true, showEmoji: false,
+    tones: ['professional', 'conversational', 'storytelling', 'inspirational'],
+    lengths: { short: 150, medium: 250, long: 400 },
+    lengthLabels: { short: 'Short (~150 words)', medium: 'Medium (~250 words)', long: 'Long (~400 words)' },
+    hashtagLimit: 14, fieldsLabel: 'Post Details'
+  };
 
 
   // ─── State ───────────────────────────────────────────────────────────────────
@@ -657,7 +708,8 @@
   const state = {
     profile: null,
     activeTemplate: null,
-    activeHashtags: new Set()
+    activeHashtags: new Set(),
+    hashtagLimit: 14
   };
 
   // ─── Template field definitions ───────────────────────────────────────────────
@@ -729,6 +781,27 @@
         { id: 'relevance', label: 'Why is this relevant to your network?', type: 'text', placeholder: 'e.g. Lessons learned, useful resource, industry relevance', required: false },
         { id: 'mood', label: 'How do you feel about it?', type: 'select', options: '<option value="positive">Positive / Excited</option><option value="reflective">Reflective</option><option value="motivated">Motivated</option><option value="curious">Curious</option>', required: false }
       ];
+
+      case 'cover-letter': return [
+        { id: 'job-title', label: 'Position you are applying for', type: 'text', placeholder: 'e.g. Senior Backend Engineer, Product Manager', required: true },
+        { id: 'company-name', label: 'Company name', type: 'text', placeholder: 'e.g. Stripe, Monzo, Acme Corp', required: true },
+        { id: 'job-source', label: 'How did you find this role?', type: 'text', placeholder: 'e.g. LinkedIn, employee referral, company careers page', required: false },
+        { id: 'jd-requirements', label: 'Key requirements from the job description', type: 'textarea', placeholder: 'Paste or paraphrase 3–5 key requirements from the JD — skills, experience level, must-haves', required: true },
+        { id: 'why-company', label: 'Why this specific company?', type: 'textarea', placeholder: 'What draws you to them — product, mission, culture, tech stack, team reputation?', required: true },
+        { id: 'highlight-achievement', label: 'One standout achievement to lead with', type: 'textarea', placeholder: 'Optional — your single most relevant achievement for this role, with a metric if possible', required: false }
+      ];
+
+      case 'instagram': {
+        const profileDomain = (profile.currentRole && profile.currentRole.domain) || profile.domain || '';
+        return [
+          { id: 'post-theme', label: 'What is this post about?', type: 'text', placeholder: 'e.g. Behind the scenes of a project, a life update, a product launch', required: true },
+          { id: 'visual-description', label: "What's in the image or video?", type: 'text', placeholder: 'e.g. Flat-lay of my desk, video from an event, team photo at the office', required: false },
+          { id: 'key-message', label: 'Core message you want to convey', type: 'textarea', placeholder: 'What should the reader take away? What is the emotional or informational point?', required: true },
+          { id: 'target-emotion', label: 'Emotion you want the audience to feel', type: 'select', options: '<option value="">Not specified</option><option value="inspired">Inspired</option><option value="entertained">Entertained</option><option value="motivated">Motivated</option><option value="informed">Informed</option>', required: false },
+          { id: 'personal-story', label: 'Include a personal story or anecdote?', type: 'textarea', placeholder: 'Optional — a brief personal moment that connects to the post theme', required: false },
+          { id: 'account-niche', label: "Account's niche or content focus", type: 'text', placeholder: 'e.g. Tech & Career, Software Engineering, Personal Growth', required: false, prefill: profileDomain }
+        ];
+      }
 
       default: return [];
     }
@@ -932,6 +1005,70 @@ WRITING INSTRUCTIONS:
 - Avoid corporate jargon, buzzwords, and filler phrases like "I'm pleased to share" or "game-changer"${hashtags.length ? `\n- Append: ${hashtags.join(' ')}` : ''}${cta ? `\n- End with: ${ctaText || 'an open question or genuine invitation to connect or discuss'}` : ''}
 
 IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
+    },
+
+    'cover-letter': (ctx) => {
+      const { profile: p, fields: f, tone, words } = ctx;
+      const topSkills = getSkillsList(p, 8).join(', ');
+      const recentRole = `${p.currentRole.title} at ${p.currentRole.company}${p.currentRole.client ? ` (client: ${p.currentRole.client})` : ''}`;
+      const prevExp = (p.experience || []).slice(0, 2).map(e => `${e.title} at ${e.company}`).join('; ');
+      return `You are an expert career coach and professional writer specialising in job application cover letters.
+
+Write a compelling, genuine cover letter for the following applicant.
+
+APPLICANT PROFILE:
+- Name: ${p.name}
+- Current / most recent role: ${recentRole}
+- Total experience: ${p.yearsExperience}+ years in ${p.currentRole.domain}
+- Key skills: ${topSkills}${prevExp ? `\n- Previous roles: ${prevExp}` : ''}
+- Professional summary: ${p.summary}
+
+APPLICATION DETAILS:
+- Applying for: ${f['job-title']} at ${f['company-name']}${f['job-source'] ? `\n- Found via: ${f['job-source']}` : ''}
+- Key JD requirements: ${f['jd-requirements']}
+- Why this company: ${f['why-company']}${f['highlight-achievement'] ? `\n- Lead achievement: ${f['highlight-achievement']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone] || TONE_DESCRIPTIONS['professional']}
+- Target length: approximately ${words} words
+- Write in first person as ${p.name}
+- Structure: opening paragraph (hook + intent) → body paragraph(s) (skills/experience mapped to JD requirements) → closing paragraph (why this company + clear ask to interview)
+- Open with something specific and compelling — NOT "I am writing to apply for", NOT "I am excited to apply"
+- Map the applicant's concrete achievements and experience directly to the key JD requirements
+- Reference the specific company by name and show genuine knowledge of why they want to work there
+- The closing paragraph should be confident, not grovelling — express clear intent to interview
+- Avoid: "I believe I would be a great fit", "I am passionate about", "please find attached my CV", hollow superlatives
+- Do NOT add a date, postal address block, or sign-off — return only the body paragraphs of the letter
+
+IMPORTANT: Return only the cover letter body text. No explanatory commentary.`;
+    },
+
+    'instagram': (ctx) => {
+      const { profile: p, fields: f, tone, words, hashtags, cta, ctaText, includeEmoji } = ctx;
+      const emotionMap = { inspired: 'inspired and motivated to take action', entertained: 'entertained and engaged', motivated: 'motivated and energised', informed: 'informed and more knowledgeable' };
+      return `You are a social media content writer specialising in authentic, high-engagement Instagram captions.
+
+Write an Instagram caption for the following creator.
+
+CREATOR PROFILE:
+- Name: ${p.name}
+- Professional background: ${p.currentRole.title}${f['account-niche'] ? `\n- Account niche: ${f['account-niche']}` : ''}
+
+POST DETAILS:
+- Theme / topic: ${f['post-theme']}${f['visual-description'] ? `\n- What's in the image/video: ${f['visual-description']}` : ''}
+- Core message: ${f['key-message']}${f['target-emotion'] && emotionMap[f['target-emotion']] ? `\n- Desired audience feeling: ${emotionMap[f['target-emotion']]}` : ''}${f['personal-story'] ? `\n- Personal story to weave in: ${f['personal-story']}` : ''}
+
+WRITING INSTRUCTIONS:
+- Tone: ${TONE_DESCRIPTIONS[tone] || TONE_DESCRIPTIONS['conversational']}
+- Target length: approximately ${words} words (caption body only, not counting hashtags)
+- Write in first person
+- Open with a scroll-stopping first line — it must work as a standalone hook before the reader taps "more"
+- Use short paragraphs (1–3 lines each) with blank lines between them — Instagram captions read in fragments
+- ${includeEmoji ? 'Use emojis naturally throughout to add warmth and visual rhythm — purposefully, not excessively' : 'Do NOT include any emojis'}
+- The caption should feel personal and human — not like a brand or a bot wrote it
+- Avoid: generic motivational platitudes, "living my best life", hollow engagement bait${cta ? `\n- End with: ${ctaText || 'an engaging question or a clear, warm call-to-action that invites followers to comment'}` : ''}${hashtags.length ? `\n\nAfter the caption body, add a blank line, then place these hashtags: ${hashtags.join(' ')}` : ''}
+
+IMPORTANT: Return only the Instagram caption text (and hashtags if specified). No preamble or commentary.`;
     }
   };
 
@@ -1033,12 +1170,57 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
     document.getElementById('paste-area').style.display = 'none';
     document.getElementById('json-paste').value = '';
+
+    state.hashtagLimit = 14;
+    applyTemplateConfig(null);
   }
 
   // ─── Template rendering ───────────────────────────────────────────────────────
 
+  function applyTemplateConfig(key) {
+    const cfg = TEMPLATE_CONFIG[key] || DEFAULT_TEMPLATE_CONFIG;
+
+    // Emoji row
+    document.getElementById('emoji-checkbox-row').style.display = cfg.showEmoji ? 'flex' : 'none';
+
+    // Hashtag row + chip area
+    const hashtagRow = document.getElementById('hashtag-checkbox-row');
+    hashtagRow.style.display = cfg.showHashtags ? 'flex' : 'none';
+    if (!cfg.showHashtags) document.getElementById('hashtag-chip-area').style.display = 'none';
+
+    // CTA row + text group
+    const ctaRow = document.getElementById('cta-checkbox-row');
+    const ctaGroup = document.getElementById('cta-text-group');
+    ctaRow.style.display = cfg.showCta ? 'flex' : 'none';
+    ctaGroup.style.display = (cfg.showCta && document.getElementById('include-cta').checked) ? 'block' : 'none';
+
+    // Rebuild tone select
+    const toneSelect = document.getElementById('tone-select');
+    const currentTone = toneSelect.value;
+    const toneLabels = { professional: 'Professional', conversational: 'Conversational', storytelling: 'Storytelling', inspirational: 'Inspirational', enthusiastic: 'Enthusiastic' };
+    toneSelect.innerHTML = cfg.tones.map(t =>
+      `<option value="${t}"${t === currentTone ? ' selected' : ''}>${toneLabels[t]}</option>`
+    ).join('');
+    if (!cfg.tones.includes(toneSelect.value)) toneSelect.value = cfg.tones[0];
+
+    // Rebuild length select
+    const lengthSelect = document.getElementById('length-select');
+    const currentLength = lengthSelect.value;
+    lengthSelect.innerHTML = Object.entries(cfg.lengthLabels).map(([val, label]) =>
+      `<option value="${val}"${val === currentLength ? ' selected' : ''}>${label}</option>`
+    ).join('');
+    if (!cfg.lengths[lengthSelect.value]) lengthSelect.value = 'medium';
+
+    // Hashtag chip limit + fields section label
+    state.hashtagLimit = cfg.hashtagLimit;
+    const fieldsLabel = document.getElementById('template-fields-label');
+    if (fieldsLabel) fieldsLabel.textContent = cfg.fieldsLabel || 'Post Details';
+  }
+
   function selectTemplate(key) {
     state.activeTemplate = key;
+    applyTemplateConfig(key);
+
     document.querySelectorAll('.template-card').forEach(c => {
       c.classList.toggle('selected', c.dataset.template === key);
     });
@@ -1111,7 +1293,7 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
   function renderHashtagChips() {
     const profile = state.profile;
-    const skills = getSkillsList(profile, 20);
+    const skills = getSkillsList(profile, state.hashtagLimit);
     const tags = skills.slice(0, 14).map(toHashtag);
     state.activeHashtags = new Set(tags);
 
@@ -1175,13 +1357,17 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
     const tone = document.getElementById('tone-select').value;
     const length = document.getElementById('length-select').value;
 
+    const cfg = TEMPLATE_CONFIG[state.activeTemplate] || DEFAULT_TEMPLATE_CONFIG;
+    const words = cfg.lengths[length] || LENGTH_WORDS[length];
+
     const ctx = {
       profile: state.profile,
       tone,
-      words: LENGTH_WORDS[length],
+      words,
       hashtags: includeHashtags ? [...state.activeHashtags] : [],
       cta: includeCta,
       ctaText,
+      includeEmoji: !!(document.getElementById('include-emoji') && document.getElementById('include-emoji').checked),
       fields: collectFieldValues()
     };
 
