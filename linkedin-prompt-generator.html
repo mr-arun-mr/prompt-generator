@@ -651,15 +651,6 @@
 
   const LENGTH_WORDS = { short: 150, medium: 250, long: 400 };
 
-  const HASHTAG_MAP = {
-    'new-job':     ['backend', 'methodologies'],
-    'achievement': ['backend', 'cloud', 'devops'],
-    'award':       ['methodologies', 'backend'],
-    'insight':     ['backend', 'security', 'cloud', 'aiTools'],
-    'learning':    ['cloud', 'backend', 'devops'],
-    'ai-news':     ['aiTools', 'backend', 'cloud'],
-    'general':     ['backend', 'methodologies']
-  };
 
   // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -683,20 +674,21 @@
 
       case 'achievement': return [
         { id: 'achievement-title', label: 'What was achieved?', type: 'text', placeholder: 'One sentence summary of the achievement', required: true },
-        { id: 'tech-used', label: 'Key technologies used', type: 'text', placeholder: 'e.g. Java 21, Spring Batch, Kubernetes', required: false, prefill: profile.currentRole.technologies.slice(0, 5).join(', ') },
+        { id: 'tech-used', label: 'Key technologies used', type: 'text', placeholder: 'e.g. Java 21, Spring Batch, Kubernetes', required: false, prefill: (profile.currentRole.technologies || []).slice(0, 5).join(', ') },
         { id: 'impact-metric', label: 'Measurable impact', type: 'text', placeholder: 'e.g. Reduced processing time by 40%', required: false },
         { id: 'problem-solved', label: 'What problem did it solve?', type: 'textarea', placeholder: 'Describe the challenge or pain point that was addressed', required: true },
         { id: 'lessons-learned', label: 'Key lesson or insight gained', type: 'textarea', placeholder: 'Optional — what would you do differently or what did you learn?', required: false }
       ];
 
       case 'award': {
-        const awardOptions = profile.awards.map(a =>
+        const awards = profile.awards || [];
+        const awardOptions = awards.map(a =>
           `<option value="${esc(a.title)}" data-issuer="${esc(a.issuer)}" data-date="${esc(a.date)}">${esc(a.title)} — ${esc(a.issuer)}</option>`
         ).join('') + '<option value="__other__">Other (type below)...</option>';
         return [
           { id: 'award-name', label: 'Award', type: 'select', options: awardOptions, required: true },
-          { id: 'award-issuer', label: 'Awarded by', type: 'text', placeholder: 'Organisation that gave the award', required: true, prefill: profile.awards[0]?.issuer },
-          { id: 'award-date', label: 'When?', type: 'text', placeholder: 'e.g. Apr 2025', required: false, prefill: profile.awards[0]?.date },
+          { id: 'award-issuer', label: 'Awarded by', type: 'text', placeholder: 'Organisation that gave the award', required: true, prefill: awards[0]?.issuer },
+          { id: 'award-date', label: 'When?', type: 'text', placeholder: 'e.g. Apr 2025', required: false, prefill: awards[0]?.date },
           { id: 'why-meaningful', label: 'Why is this award meaningful to you?', type: 'textarea', placeholder: 'What effort or value does it recognise?', required: true },
           { id: 'team-credit', label: 'Anyone who helped you earn this?', type: 'text', placeholder: 'Optional — colleagues, mentors, team', required: false }
         ];
@@ -710,12 +702,13 @@
       ];
 
       case 'learning': {
-        const certOptions = profile.certifications.map(c =>
+        const certs = profile.certifications || [];
+        const certOptions = certs.map(c =>
           `<option value="${esc(c.title)}" data-issuer="${esc(c.issuer)}">${esc(c.title)} — ${esc(c.issuer)}</option>`
         ).join('') + '<option value="__other__">Other (type below)...</option>';
         return [
           { id: 'cert-name', label: 'Certification / Course', type: 'select', options: certOptions, required: true },
-          { id: 'cert-issuer', label: 'Issuing body', type: 'text', placeholder: 'e.g. Google, AWS, Coursera', required: false, prefill: profile.certifications[0]?.issuer },
+          { id: 'cert-issuer', label: 'Issuing body', type: 'text', placeholder: 'e.g. Google, AWS, Coursera', required: false, prefill: certs[0]?.issuer },
           { id: 'completion-date', label: 'When did you complete it?', type: 'text', placeholder: 'e.g. April 2026', required: false },
           { id: 'why-pursued', label: 'Why did you pursue this?', type: 'textarea', placeholder: 'What gap were you filling or goal were you working toward?', required: true },
           { id: 'key-learning', label: 'Most valuable thing you learned', type: 'textarea', placeholder: 'A specific skill or capability you now have', required: true }
@@ -727,7 +720,7 @@
         { id: 'news-source', label: 'Source', type: 'text', placeholder: 'e.g. TechCrunch, The Verge, official blog', required: false },
         { id: 'personal-take', label: 'Your personal take on this news', type: 'textarea', placeholder: 'What do YOU think about it? Be specific and opinionated.', required: true },
         { id: 'field-impact', label: 'How does it affect your field?', type: 'textarea', placeholder: 'How does this news impact your domain, your daily work, or your industry?', required: true },
-        { id: 'ai-tools-note', label: 'Your current AI tools experience', type: 'text', placeholder: 'e.g. I use GitHub Copilot and Claude daily in my workflow', required: false, prefill: profile.skills.aiTools ? `I use ${profile.skills.aiTools.join(', ')} in my daily workflow` : '' }
+        { id: 'ai-tools-note', label: 'Your current AI tools experience', type: 'text', placeholder: 'e.g. I use GitHub Copilot and Claude daily in my workflow', required: false, prefill: (() => { const t = getAiToolsList(profile); return t.length ? `I use ${t.join(', ')} in my daily workflow` : ''; })() }
       ];
 
       case 'general': return [
@@ -830,7 +823,7 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
     'insight': (ctx) => {
       const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
-      const topSkills = [...(p.skills.backend || []), ...(p.skills.cloud || [])].slice(0, 8).join(', ');
+      const topSkills = getSkillsList(p, 8).join(', ');
       return `You are a LinkedIn ghostwriter specialising in thought leadership posts for senior engineers.
 
 PERSON DETAILS:
@@ -858,14 +851,13 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
     'learning': (ctx) => {
       const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
-      const backendSkills = (p.skills.backend || []).slice(0, 5).join(', ');
-      const cloudSkills = (p.skills.cloud || []).slice(0, 4).join(', ');
-      return `You are a LinkedIn content writer helping a senior engineer share a learning achievement.
+      const topSkills = getSkillsList(p, 9).join(', ');
+      return `You are a LinkedIn content writer helping a professional share a learning achievement.
 
 PERSON DETAILS:
 - Name: ${p.name}
 - Role: ${p.currentRole.title} with ${p.yearsExperience} years of experience
-- Technical background: ${backendSkills} and ${cloudSkills}
+- Technical background: ${topSkills}
 - Current domain: ${p.currentRole.domain}
 
 CERTIFICATION / LEARNING DETAILS:
@@ -887,7 +879,7 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
     'ai-news': (ctx) => {
       const { profile: p, fields: f, tone, words, hashtags, cta, ctaText } = ctx;
-      const aiTools = (p.skills.aiTools || []).join(', ');
+      const aiTools = getAiToolsList(p).join(', ');
       return `You are a LinkedIn content writer helping a senior software engineer comment on an AI or tech industry news story.
 
 PERSON DETAILS:
@@ -944,6 +936,24 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
   };
 
   // ─── Utilities ────────────────────────────────────────────────────────────────
+
+  function getSkillsList(profile, limit = 12) {
+    const cats = profile.primarySkillCategories || Object.keys(profile.skills || {});
+    const seen = new Set();
+    const out = [];
+    cats.forEach(cat => {
+      (profile.skills[cat] || []).forEach(s => {
+        if (!seen.has(s)) { seen.add(s); out.push(s); }
+      });
+    });
+    return out.slice(0, limit);
+  }
+
+  function getAiToolsList(profile) {
+    if (profile.skills.aiTools && profile.skills.aiTools.length) return profile.skills.aiTools;
+    const key = Object.keys(profile.skills).find(k => k.toLowerCase().includes('ai') || k.toLowerCase().includes('tool'));
+    return key ? profile.skills[key] : [];
+  }
 
   function esc(str) {
     if (!str) return '';
@@ -1035,7 +1045,7 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
 
     const fields = getTemplateFields(key, state.profile);
     renderTemplateFields(fields);
-    renderHashtagChips(key);
+    renderHashtagChips();
 
     document.getElementById('config-section').style.display = 'block';
     document.getElementById('generate-bar').style.display = 'block';
@@ -1099,16 +1109,9 @@ IMPORTANT: Return only the LinkedIn post text. No preamble or commentary.`;
     }).join('');
   }
 
-  function renderHashtagChips(templateKey) {
-    const categories = HASHTAG_MAP[templateKey] || [];
+  function renderHashtagChips() {
     const profile = state.profile;
-    const seen = new Set();
-    const skills = [];
-    categories.forEach(cat => {
-      (profile.skills[cat] || []).forEach(s => {
-        if (!seen.has(s)) { seen.add(s); skills.push(s); }
-      });
-    });
+    const skills = getSkillsList(profile, 20);
     const tags = skills.slice(0, 14).map(toHashtag);
     state.activeHashtags = new Set(tags);
 

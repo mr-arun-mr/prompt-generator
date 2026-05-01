@@ -7,6 +7,8 @@
   "linkedin": "linkedin.com/in/arun-m-r-nair",
   "summary": "Senior Java Developer and Tech Lead with 13+ years of enterprise experience across Banking, Financial Services, and Application Security. Specialist in Java, Spring Boot, Microservices, and RESTful APIs, with deep expertise in IAM, OAuth 2.0, Keycloak, and Auth0. Proven track record in GCP cloud migration and ETL pipelines. Currently engineering enterprise loan systems for Goldman Sachs (via Apexon). Consistent award winner recognised for performance and delivery excellence.",
   "yearsExperience": 13,
+  "domain": "Banking / Fintech",
+  "primarySkillCategories": ["backend", "security", "cloud", "devops", "aiTools", "methodologies"],
   "currentRole": {
     "title": "Senior Software Engineer",
     "company": "Apexon",
